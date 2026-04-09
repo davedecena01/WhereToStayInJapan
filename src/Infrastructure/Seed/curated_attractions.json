@@ -1,0 +1,359 @@
+[
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000001",
+    "name": "Shinjuku Gyoen National Garden",
+    "category": "Park / Garden",
+    "walkMinutes": 10,
+    "notes": "Beautiful garden with cherry blossoms in spring. Entry fee required."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000001",
+    "name": "Tokyo Metropolitan Government Building (Observation Deck)",
+    "category": "Viewpoint",
+    "walkMinutes": 12,
+    "notes": "Free observation deck with panoramic Tokyo views including Mt. Fuji on clear days."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000001",
+    "name": "Kabukicho (Entertainment District)",
+    "category": "Nightlife / Entertainment",
+    "walkMinutes": 5,
+    "notes": "Tokyo's busiest entertainment district. Safe to walk at night."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000001",
+    "name": "Golden Gai",
+    "category": "Bar Street",
+    "walkMinutes": 7,
+    "notes": "Labyrinth of tiny atmospheric bars. Unique Tokyo experience."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000002",
+    "name": "Shibuya Crossing",
+    "category": "Landmark",
+    "walkMinutes": 2,
+    "notes": "World's busiest scramble crossing. Best viewed from Starbucks or Mag's Park above."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000002",
+    "name": "Meiji Jingu Shrine",
+    "category": "Shrine",
+    "walkMinutes": 15,
+    "notes": "Forested Shinto shrine dedicated to Emperor Meiji. Peaceful contrast to Harajuku crowds."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000002",
+    "name": "Takeshita Street (Harajuku)",
+    "category": "Shopping / Pop Culture",
+    "walkMinutes": 20,
+    "notes": "Youth fashion and street food. Crepes, quirky shops, Harajuku culture."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000002",
+    "name": "Omotesando Hills",
+    "category": "Shopping / Architecture",
+    "walkMinutes": 22,
+    "notes": "Upscale spiral shopping complex designed by Tadao Ando."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000003",
+    "name": "Senso-ji Temple",
+    "category": "Temple",
+    "walkMinutes": 5,
+    "notes": "Tokyo's oldest and most famous temple. Especially beautiful at night."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000003",
+    "name": "Nakamise Shopping Street",
+    "category": "Shopping / Traditional",
+    "walkMinutes": 5,
+    "notes": "250-meter traditional souvenir shopping street leading to Senso-ji."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000003",
+    "name": "Sumida River Cruise",
+    "category": "Boat Tour",
+    "walkMinutes": 8,
+    "notes": "Scenic river cruise from Asakusa toward Odaiba. Great city views."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000003",
+    "name": "Tokyo Skytree",
+    "category": "Tower / Viewpoint",
+    "walkMinutes": 15,
+    "notes": "World's second tallest structure. Two observation decks."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000004",
+    "name": "Tsukiji Outer Market",
+    "category": "Market / Food",
+    "walkMinutes": 20,
+    "notes": "Famous fish and food market. Great for fresh sushi breakfast."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000004",
+    "name": "Ginza Six",
+    "category": "Shopping / Luxury",
+    "walkMinutes": 5,
+    "notes": "Flagship luxury shopping center with rooftop garden."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000004",
+    "name": "teamLab Planets Tokyo",
+    "category": "Art / Immersive Experience",
+    "walkMinutes": 30,
+    "notes": "Popular immersive digital art installation. Book tickets in advance."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000005",
+    "name": "Akihabara Electric Town",
+    "category": "Shopping / Electronics / Anime",
+    "walkMinutes": 3,
+    "notes": "World center for electronics, anime, manga, and gaming culture."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000005",
+    "name": "Yodobashi Akiba",
+    "category": "Electronics Store",
+    "walkMinutes": 5,
+    "notes": "Massive electronics and gadget store. Tax-free for tourists."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000005",
+    "name": "Kanda Myojin Shrine",
+    "category": "Shrine",
+    "walkMinutes": 10,
+    "notes": "Historic shrine popular with tech workers and gamers."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000006",
+    "name": "Sunshine City Aquarium",
+    "category": "Aquarium",
+    "walkMinutes": 10,
+    "notes": "Popular aquarium inside the Sunshine City complex."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000006",
+    "name": "Ikebukuro Animate",
+    "category": "Anime / Manga",
+    "walkMinutes": 5,
+    "notes": "Japan's largest anime merchandise store. 9 floors."
+  },
+  {
+    "stationAreaId": "a1000001-0000-0000-0000-000000000006",
+    "name": "Rikkyo University Campus",
+    "category": "Architecture / Walk",
+    "walkMinutes": 12,
+    "notes": "Beautiful red-brick Gothic Revival campus. Free to walk around."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000001",
+    "name": "Dotonbori Canal Walk",
+    "category": "Landmark / Walk",
+    "walkMinutes": 3,
+    "notes": "Iconic neon-lit canal. Best at night. Famous Glico Running Man sign."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000001",
+    "name": "Shinsaibashi Shopping Arcade",
+    "category": "Shopping",
+    "walkMinutes": 8,
+    "notes": "Covered shopping street, one of Japan's oldest. Mix of brands and souvenirs."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000001",
+    "name": "Hozenji Yokocho",
+    "category": "Temple / Atmosphere",
+    "walkMinutes": 5,
+    "notes": "Moss-covered stone lanterns, tiny Fuudo-san temple. Atmospheric alley."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000001",
+    "name": "Shinsekai District",
+    "category": "Retro Neighborhood",
+    "walkMinutes": 20,
+    "notes": "1920s retro district with Tsutenkaku Tower. Great for kushikatsu and atmosphere."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000002",
+    "name": "Osaka Umeda Sky Building",
+    "category": "Architecture / Viewpoint",
+    "walkMinutes": 15,
+    "notes": "Futuristic floating garden observatory. Stunning Osaka city views."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000002",
+    "name": "HEP Five Ferris Wheel",
+    "category": "Viewpoint / Attraction",
+    "walkMinutes": 5,
+    "notes": "Red ferris wheel on top of a shopping mall. Unique Umeda photo spot."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000003",
+    "name": "Amerika-mura (American Village)",
+    "category": "Shopping / Street Culture",
+    "walkMinutes": 5,
+    "notes": "Youth fashion hub with vintage clothes, street art, and pop culture."
+  },
+  {
+    "stationAreaId": "a1000002-0000-0000-0000-000000000003",
+    "name": "Osaka Castle",
+    "category": "Castle / History",
+    "walkMinutes": 35,
+    "notes": "Osaka's iconic landmark. Grounds are beautiful year-round. Museum inside."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000001",
+    "name": "Fushimi Inari Taisha",
+    "category": "Shrine",
+    "walkMinutes": 30,
+    "notes": "Thousands of torii gates on a mountain trail. Go early to avoid crowds."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000001",
+    "name": "Kiyomizudera Temple",
+    "category": "Temple",
+    "walkMinutes": 25,
+    "notes": "Iconic wooden stage temple on a hill. Panoramic Kyoto views."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000001",
+    "name": "Hanamikoji Street (Gion)",
+    "category": "Historic District",
+    "walkMinutes": 5,
+    "notes": "Preserved geisha district street. Best at dusk for maiko sightings."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000001",
+    "name": "Yasaka Shrine",
+    "category": "Shrine",
+    "walkMinutes": 8,
+    "notes": "Free entry, 24/7 access. Beautiful lanterns at night."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000002",
+    "name": "Nijo Castle",
+    "category": "Castle / UNESCO",
+    "walkMinutes": 30,
+    "notes": "UNESCO World Heritage site with nightingale floors and ornate interiors."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000002",
+    "name": "Kyoto Tower Observation Deck",
+    "category": "Viewpoint",
+    "walkMinutes": 3,
+    "notes": "Best views of Kyoto from above the station. Good at night."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000002",
+    "name": "Tofuku-ji Temple",
+    "category": "Temple / Zen Garden",
+    "walkMinutes": 20,
+    "notes": "Famous Zen garden. Peak autumn foliage spot in late November."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000003",
+    "name": "Arashiyama Bamboo Grove",
+    "category": "Nature / Landmark",
+    "walkMinutes": 5,
+    "notes": "Iconic tall bamboo forest path. Go before 8am to avoid crowds."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000003",
+    "name": "Tenryu-ji Temple Garden",
+    "category": "Temple / UNESCO Garden",
+    "walkMinutes": 7,
+    "notes": "UNESCO World Heritage garden with pond and mountain backdrop."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000003",
+    "name": "Togetsukyo Bridge",
+    "category": "Landmark / Photo Spot",
+    "walkMinutes": 8,
+    "notes": "Arashiyama's iconic bridge over the Oi River. Best in cherry blossom and autumn seasons."
+  },
+  {
+    "stationAreaId": "a1000003-0000-0000-0000-000000000003",
+    "name": "Okochi Sanso Villa",
+    "category": "Historic Villa / Garden",
+    "walkMinutes": 15,
+    "notes": "Former samurai actor's villa with multiple tea houses and gardens."
+  },
+  {
+    "stationAreaId": "a1000004-0000-0000-0000-000000000001",
+    "name": "Todai-ji Temple (Great Buddha)",
+    "category": "Temple / UNESCO",
+    "walkMinutes": 20,
+    "notes": "UNESCO World Heritage. Home to Japan's largest bronze Buddha. Deer roam freely outside."
+  },
+  {
+    "stationAreaId": "a1000004-0000-0000-0000-000000000001",
+    "name": "Nara Deer Park",
+    "category": "Nature / Wildlife",
+    "walkMinutes": 10,
+    "notes": "Over 1,000 free-roaming deer considered sacred messengers. Feed with shika senbei."
+  },
+  {
+    "stationAreaId": "a1000004-0000-0000-0000-000000000001",
+    "name": "Kasuga Taisha Shrine",
+    "category": "Shrine / UNESCO",
+    "walkMinutes": 25,
+    "notes": "UNESCO shrine famous for thousands of stone and bronze lanterns."
+  },
+  {
+    "stationAreaId": "a1000004-0000-0000-0000-000000000001",
+    "name": "Yoshikien Garden",
+    "category": "Traditional Garden",
+    "walkMinutes": 22,
+    "notes": "Serene traditional garden. Free entry for foreign visitors."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000001",
+    "name": "Hiroshima Peace Memorial Museum",
+    "category": "Museum / History",
+    "walkMinutes": 15,
+    "notes": "Essential visit. Powerful and moving A-bomb memorial museum."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000001",
+    "name": "Atomic Bomb Dome (Genbaku Dome)",
+    "category": "UNESCO / Memorial",
+    "walkMinutes": 15,
+    "notes": "Preserved ruins of the industrial building directly below the bomb. Free, open 24/7."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000001",
+    "name": "Peace Memorial Park",
+    "category": "Park / Memorial",
+    "walkMinutes": 15,
+    "notes": "Beautiful riverside park with multiple memorials. Center of Hiroshima's peace tourism."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000001",
+    "name": "Hiroshima Castle",
+    "category": "Castle",
+    "walkMinutes": 25,
+    "notes": "Reconstructed castle with museum. Nice moat and grounds."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000002",
+    "name": "Itsukushima Shrine",
+    "category": "Shrine / UNESCO",
+    "walkMinutes": 20,
+    "notes": "Famous floating torii gate. UNESCO World Heritage. Best at high tide."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000002",
+    "name": "Mt. Misen Hike",
+    "category": "Hiking / Nature",
+    "walkMinutes": 30,
+    "notes": "Hike or ropeway to Miyajima's highest peak. Panoramic Inland Sea views."
+  },
+  {
+    "stationAreaId": "a1000005-0000-0000-0000-000000000002",
+    "name": "Miyajima Ferry",
+    "category": "Transport / Experience",
+    "walkMinutes": 5,
+    "notes": "Short ferry crossing from Miyajimaguchi. Covered by JR Pass. Great views of the torii."
+  }
+]
