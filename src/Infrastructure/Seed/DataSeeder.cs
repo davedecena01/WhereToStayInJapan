@@ -12,10 +12,16 @@ public class DataSeeder(IServiceProvider services, ILogger<DataSeeder> logger) :
 {
     public async Task StartAsync(CancellationToken ct)
     {
-        await using var scope = services.CreateAsyncScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        await SeedStationAreasAsync(db, ct);
+        try
+        {
+            await using var scope = services.CreateAsyncScope();
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            await SeedStationAreasAsync(db, ct);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "DataSeeder failed — seed data may need to be applied manually.");
+        }
     }
 
     public Task StopAsync(CancellationToken ct) => Task.CompletedTask;
@@ -64,7 +70,7 @@ public class DataSeeder(IServiceProvider services, ILogger<DataSeeder> logger) :
         }).ToList();
 
         db.StationAreas.AddRange(areas);
-        await db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(CancellationToken.None);
         logger.LogInformation("Seeded {Count} station areas.", areas.Count);
 
         await SeedFoodAsync(db, areas, ct);
@@ -103,7 +109,7 @@ public class DataSeeder(IServiceProvider services, ILogger<DataSeeder> logger) :
             }).ToList();
 
         db.CuratedFood.AddRange(food);
-        await db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(CancellationToken.None);
         logger.LogInformation("Seeded {Count} curated food items.", food.Count);
     }
 
@@ -135,7 +141,7 @@ public class DataSeeder(IServiceProvider services, ILogger<DataSeeder> logger) :
             }).ToList();
 
         db.CuratedAttractions.AddRange(attractions);
-        await db.SaveChangesAsync(ct);
+        await db.SaveChangesAsync(CancellationToken.None);
         logger.LogInformation("Seeded {Count} curated attractions.", attractions.Count);
     }
 

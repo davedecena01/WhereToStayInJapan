@@ -29,6 +29,9 @@ skills-lock.json
 .claude/settings.json
 .claude/skills/
 
+# Logs
+src/API/logs/
+
 # OS
 .DS_Store
 Thumbs.db

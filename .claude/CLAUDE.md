@@ -589,20 +589,25 @@ Do not generate large amounts of low-value test boilerplate.
 
 ---
 
-## Git & Repository Etiquette
+## Mandatory Branching and Commit Workflow
 
-This repository should follow a clean and professional Git workflow.
+Claude must never commit or push directly to `main`.
 
-### Branching
-- always create a feature branch before major changes
-- never commit directly to `main`
+Before any major code, documentation, or structural change, Claude must:
 
-### Branch Naming
-Use:
-- `feature/description`
-- `fix/description`
-- `refactor/description`
-- `docs/description`
+1. check the current git branch
+2. if on `main`, create a new branch before proceeding
+3. use one of these prefixes:
+   - `feature/description`
+   - `fix/description`
+   - `refactor/description`
+   - `docs/description`
+4. confirm or state the branch name being used
+5. only then proceed with implementation
+
+If branch creation is not possible, Claude must stop and explain the issue before continuing.
+
+Claude must treat working directly on `main` as a workflow violation, not a suggestion.
 
 ### Commit Style
 Use clear, professional commit messages.
@@ -617,8 +622,6 @@ Examples:
 - `refactor: simplify recommendation scoring service`
 
 Claude should suggest commits that reflect meaningful units of work.
-
----
 
 ## Workflow for Claude
 
