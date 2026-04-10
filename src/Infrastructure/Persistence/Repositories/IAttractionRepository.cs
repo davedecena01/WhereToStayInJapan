@@ -1,8 +1,2 @@
-using WhereToStayInJapan.Domain.Entities;
-
-namespace WhereToStayInJapan.Infrastructure.Persistence.Repositories;
-
-public interface IAttractionRepository
-{
-    Task<IReadOnlyList<CuratedAttraction>> GetCuratedAttractionsAsync(Guid stationAreaId, int limit = 10, CancellationToken ct = default);
-}
+// Interface moved to Application.Interfaces — see IAttractionRepository.cs there
+global using IAttractionRepository = WhereToStayInJapan.Application.Interfaces.IAttractionRepository;

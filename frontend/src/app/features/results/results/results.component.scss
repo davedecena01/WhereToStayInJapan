@@ -1,0 +1,351 @@
+.results-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+// ── Loading ───────────────────────────────────────────────────────────────
+
+.loading-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.loading-card {
+  height: 220px;
+  border-radius: 12px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0e8e0 25%, #fdf5ee 50%, #f0e8e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.loading-text {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+// ── Error ─────────────────────────────────────────────────────────────────
+
+.error-banner {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────
+
+.results-header {
+  margin-bottom: 1.5rem;
+}
+
+.results-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin-bottom: 0.25rem;
+}
+
+.results-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+// ── Multi-region banner ───────────────────────────────────────────────────
+
+.multi-region-banner {
+  background: #e8f4fd;
+  border: 1px solid #b3d8f5;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #1a4b70;
+}
+
+.banner-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+// ── Cards ─────────────────────────────────────────────────────────────────
+
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rec-card {
+  background: #fff;
+  border: 1px solid #e8ddd5;
+  border-radius: 12px;
+  overflow: visible;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s;
+
+  &:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+  &--top {
+    border-color: var(--color-sakura);
+    box-shadow: 0 4px 16px rgba(248, 167, 187, 0.25);
+  }
+}
+
+// ── Rank badge ────────────────────────────────────────────────────────────
+
+.rank-badge {
+  position: absolute;
+  top: -12px;
+  left: 1.25rem;
+  padding: 0.2rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &--1 { background: var(--color-sakura); color: #fff; }
+  &--2 { background: var(--color-gold);   color: #fff; }
+  &--3 { background: #b0b8c1;             color: #fff; }
+}
+
+// ── Card body ─────────────────────────────────────────────────────────────
+
+.card-body { padding: 1.75rem 1.5rem 1.5rem; }
+
+.area-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.area-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  margin: 0 0 0.15rem;
+}
+
+.area-meta {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0;
+}
+
+.area-score {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.score-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-navy);
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-left: 0.1rem;
+}
+
+// ── Score bar ─────────────────────────────────────────────────────────────
+
+.score-bar-track {
+  height: 6px;
+  background: #f0e8e0;
+  border-radius: 3px;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-sakura), var(--color-gold));
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+// ── Score breakdown pills ─────────────────────────────────────────────────
+
+.score-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.score-pill {
+  background: #f8f2ec;
+  border-radius: 20px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+// ── Travel time ───────────────────────────────────────────────────────────
+
+.travel-time {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
+// ── AI explanation ────────────────────────────────────────────────────────
+
+.explanation {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fdfaf7;
+  border-left: 3px solid var(--color-sakura);
+  border-radius: 0 6px 6px 0;
+}
+
+// ── Pros & Cons ───────────────────────────────────────────────────────────
+
+.pros-cons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  @media (max-width: 540px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pros-cons-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 0.4rem;
+  color: #999;
+}
+
+.pros ul, .cons ul {
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  font-size: 0.875rem;
+
+  li { margin-bottom: 0.25rem; color: #444; }
+}
+
+.pros ul li::marker { color: #4caf82; }
+.cons ul li::marker { color: #e07a5f; }
+
+// ── Hotel section ─────────────────────────────────────────────────────────
+
+.hotel-section, .food-section {
+  border-top: 1px solid #f0e8e0;
+  padding-top: 0.875rem;
+  margin-top: 0.875rem;
+}
+
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #999;
+  margin: 0 0 0.5rem;
+}
+
+.hotel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hotel-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: #fdfaf7;
+  border: 1px solid #ede6de;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+
+  &:hover { background: #fdf4ea; }
+}
+
+.hotel-name  { flex: 1; font-size: 0.875rem; color: var(--color-navy); }
+.hotel-price { font-size: 0.85rem; color: #555; font-weight: 600; flex-shrink: 0; }
+.hotel-rating { font-size: 0.8rem; color: var(--color-gold); flex-shrink: 0; }
+
+// ── Food tags ─────────────────────────────────────────────────────────────
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag {
+  background: #f8f2ec;
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  color: #555;
+
+  em { color: #999; font-style: normal; margin-left: 0.3rem; }
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────
+
+.results-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-back, .btn-secondary {
+  display: inline-block;
+  padding: 0.55rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--color-navy);
+  border: 1px solid #ddd;
+  background: transparent;
+  text-decoration: none;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: #bbb; }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #888;
+
+  p { margin-bottom: 1rem; }
+}

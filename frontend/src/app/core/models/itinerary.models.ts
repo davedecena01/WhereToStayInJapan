@@ -46,6 +46,75 @@ export interface UserPreferences {
   preferred_atmosphere: AtmosphereType[];
 }
 
+// ── Recommendation models ──────────────────────────────────────────────────
+
+export interface ScoreBreakdown {
+  travel_time: number;
+  cost: number;
+  station_proximity: number;
+  food_access: number;
+  shopping: number;
+}
+
+export interface FoodItem {
+  name: string;
+  cuisine_type: string;
+  address: string | null;
+  lat: number | null;
+  lng: number | null;
+  notes: string | null;
+  is_featured: boolean;
+}
+
+export interface AttractionItem {
+  name: string;
+  category: string;
+  walk_minutes: number | null;
+  notes: string | null;
+}
+
+export interface HotelItem {
+  hotel_id: string;
+  name: string;
+  thumbnail_url: string | null;
+  price_per_night_jpy: number;
+  review_score: number | null;
+  deep_link_url: string;
+  distance_to_station_km: number | null;
+}
+
+export interface StayAreaRecommendation {
+  area_id: string;
+  area_name: string;
+  city: string;
+  region: string;
+  station: string;
+  rank: number;
+  total_score: number;
+  score_breakdown: ScoreBreakdown;
+  avg_travel_time_minutes: number | null;
+  avg_hotel_price_jpy: number;
+  explanation: string | null;
+  pros: string[];
+  cons: string[];
+  featured_food: FoodItem[];
+  featured_attractions: AttractionItem[];
+  hotel_preview: HotelItem[];
+  hotels_available: boolean;
+}
+
+export interface RecommendationResult {
+  recommendations: StayAreaRecommendation[];
+  is_multi_region: boolean;
+  regions_detected: string[];
+  multi_region_warning: string | null;
+}
+
+export interface RecommendationRequest {
+  itinerary: ParsedItinerary;
+  preferences: UserPreferences;
+}
+
 export interface ApiError {
   type: string;
   title: string;

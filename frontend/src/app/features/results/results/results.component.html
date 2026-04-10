@@ -1,0 +1,157 @@
+<div class="results-page">
+
+  <!-- Loading state -->
+  @if (recStore.loading()) {
+    <div class="loading-shell">
+      <div class="loading-card skeleton"></div>
+      <div class="loading-card skeleton"></div>
+      <div class="loading-card skeleton"></div>
+      <p class="loading-text">Finding the best areas for your itinerary…</p>
+    </div>
+  }
+
+  <!-- Error state -->
+  @if (recStore.error() && !recStore.loading()) {
+    <div class="error-banner" role="alert">
+      <p>{{ recStore.error() }}</p>
+      <a routerLink="/review" class="btn-back">← Back to review</a>
+    </div>
+  }
+
+  <!-- Results -->
+  @if (recStore.hasResults() && !recStore.loading()) {
+    <header class="results-header">
+      <h1 class="results-title">Where to Stay</h1>
+      <p class="results-subtitle">
+        Based on your itinerary across
+        <strong>{{ recStore.result()?.regions_detected?.join(' & ') }}</strong>
+      </p>
+    </header>
+
+    <!-- Multi-region warning -->
+    @if (recStore.isMultiRegion()) {
+      <div class="multi-region-banner" role="status">
+        <span class="banner-icon">🗾</span>
+        <span>{{ recStore.multiRegionWarning() }}</span>
+      </div>
+    }
+
+    <!-- Recommendation cards -->
+    <div class="cards-list">
+      @for (rec of recStore.recommendations(); track trackByAreaId($index, rec)) {
+        <div class="rec-card" [class.rec-card--top]="rec.rank === 1">
+
+          <!-- Rank badge -->
+          <div class="rank-badge" [ngClass]="'rank-badge--' + rec.rank">
+            {{ rankLabel(rec.rank) }}
+          </div>
+
+          <div class="card-body">
+
+            <!-- Area header -->
+            <div class="area-header">
+              <div>
+                <h2 class="area-name">{{ rec.area_name }}</h2>
+                <p class="area-meta">{{ rec.station }} · {{ rec.city }}, {{ rec.region }}</p>
+              </div>
+              <div class="area-score">
+                <span class="score-value">{{ scorePercent(rec.total_score) }}</span>
+                <span class="score-label">/ 100</span>
+              </div>
+            </div>
+
+            <!-- Score bar -->
+            <div class="score-bar-track" role="progressbar"
+                 [attr.aria-valuenow]="scorePercent(rec.total_score)" aria-valuemin="0" aria-valuemax="100">
+              <div class="score-bar-fill" [style.width.%]="scorePercent(rec.total_score)"></div>
+            </div>
+
+            <!-- Score breakdown pills -->
+            <div class="score-breakdown">
+              <span class="score-pill">🚆 Travel {{ scorePercent(rec.score_breakdown.travel_time) }}%</span>
+              <span class="score-pill">💴 Cost {{ scorePercent(rec.score_breakdown.cost) }}%</span>
+              <span class="score-pill">📍 Station {{ scorePercent(rec.score_breakdown.station_proximity) }}%</span>
+              <span class="score-pill">🍜 Food {{ scorePercent(rec.score_breakdown.food_access) }}%</span>
+            </div>
+
+            <!-- Travel time -->
+            @if (rec.avg_travel_time_minutes != null) {
+              <p class="travel-time">Avg. travel time to your destinations: <strong>{{ rec.avg_travel_time_minutes }} min</strong></p>
+            }
+
+            <!-- AI explanation -->
+            @if (rec.explanation) {
+              <p class="explanation">{{ rec.explanation }}</p>
+            }
+
+            <!-- Pros & Cons -->
+            <div class="pros-cons">
+              <div class="pros">
+                <h3 class="pros-cons-label">Pros</h3>
+                <ul>
+                  @for (pro of rec.pros; track pro) {
+                    <li>{{ pro }}</li>
+                  }
+                </ul>
+              </div>
+              <div class="cons">
+                <h3 class="pros-cons-label">Cons</h3>
+                <ul>
+                  @for (con of rec.cons; track con) {
+                    <li>{{ con }}</li>
+                  }
+                </ul>
+              </div>
+            </div>
+
+            <!-- Hotel preview -->
+            @if (rec.hotels_available && rec.hotel_preview.length > 0) {
+              <div class="hotel-section">
+                <h3 class="section-label">Sample Hotels</h3>
+                <div class="hotel-list">
+                  @for (hotel of rec.hotel_preview; track hotel.hotel_id) {
+                    <a class="hotel-row" [href]="hotel.deep_link_url" target="_blank" rel="noopener noreferrer">
+                      <span class="hotel-name">{{ hotel.name }}</span>
+                      <span class="hotel-price">{{ formatPrice(hotel.price_per_night_jpy) }}/night</span>
+                      @if (hotel.review_score != null) {
+                        <span class="hotel-rating">★ {{ hotel.review_score }}</span>
+                      }
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Food suggestions -->
+            @if (rec.featured_food.length > 0) {
+              <div class="food-section">
+                <h3 class="section-label">Nearby Food</h3>
+                <div class="tags">
+                  @for (f of rec.featured_food; track f.name) {
+                    <span class="tag">{{ f.name }} <em>{{ f.cuisine_type }}</em></span>
+                  }
+                </div>
+              </div>
+            }
+
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Footer actions -->
+    <div class="results-actions">
+      <a routerLink="/review" class="btn-secondary">← Edit Itinerary</a>
+      <button class="btn-secondary" (click)="startOver()">Start Over</button>
+    </div>
+  }
+
+  <!-- Empty state (no results, no loading, no error) -->
+  @if (!recStore.hasResults() && !recStore.loading() && !recStore.error()) {
+    <div class="empty-state">
+      <p>No recommendations available for your itinerary regions.</p>
+      <a routerLink="/review" class="btn-secondary">← Back to review</a>
+    </div>
+  }
+
+</div>

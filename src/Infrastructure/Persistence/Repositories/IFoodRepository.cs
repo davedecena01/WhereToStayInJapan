@@ -1,8 +1,2 @@
-using WhereToStayInJapan.Domain.Entities;
-
-namespace WhereToStayInJapan.Infrastructure.Persistence.Repositories;
-
-public interface IFoodRepository
-{
-    Task<IReadOnlyList<CuratedFood>> GetCuratedFoodAsync(Guid stationAreaId, int limit = 8, CancellationToken ct = default);
-}
+// Interface moved to Application.Interfaces — see IFoodRepository.cs there
+global using IFoodRepository = WhereToStayInJapan.Application.Interfaces.IFoodRepository;

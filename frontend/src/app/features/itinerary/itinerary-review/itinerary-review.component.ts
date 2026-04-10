@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ItineraryStore } from '../../../core/stores/itinerary.store';
 import { SessionService } from '../../../core/services/session.service';
+import { RecommendationStore } from '../../../core/stores/recommendation.store';
 
 @Component({
   selector: 'app-itinerary-review',
@@ -13,6 +14,7 @@ import { SessionService } from '../../../core/services/session.service';
 export class ItineraryReviewComponent {
   private readonly router = inject(Router);
   private readonly session = inject(SessionService);
+  private readonly recStore = inject(RecommendationStore);
 
   readonly store = inject(ItineraryStore);
   readonly itinerary = this.store.parsedItinerary;
@@ -25,6 +27,9 @@ export class ItineraryReviewComponent {
     if (!itinerary) return;
 
     this.session.save(itinerary, preferences);
+
+    // Kick off recommendation fetch and navigate — results page shows loading state
+    this.recStore.fetchRecommendations(itinerary, preferences);
     this.router.navigate(['/results']);
   }
 

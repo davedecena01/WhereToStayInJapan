@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WhereToStayInJapan.Application.DTOs;
-using WhereToStayInJapan.Infrastructure.Persistence.Repositories;
+using WhereToStayInJapan.Application.Interfaces;
 
 namespace WhereToStayInJapan.API.Controllers;
 

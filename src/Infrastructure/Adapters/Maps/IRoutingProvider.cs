@@ -1,8 +1,3 @@
-namespace WhereToStayInJapan.Infrastructure.Adapters.Maps;
-
-public record RoutingResult(int DurationMins, decimal DistanceKm);
-
-public interface IRoutingProvider
-{
-    Task<RoutingResult?> GetTravelTimeAsync(GeoPoint origin, GeoPoint destination, string travelMode = "driving", CancellationToken ct = default);
-}
+// Interface and types moved to Application.Interfaces — see IRoutingProvider.cs there
+global using IRoutingProvider = WhereToStayInJapan.Application.Interfaces.IRoutingProvider;
+global using RoutingResult = WhereToStayInJapan.Application.Interfaces.RoutingResult;

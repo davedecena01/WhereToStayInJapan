@@ -22,7 +22,9 @@ public record StayAreaRecommendationDto(
     List<string> Pros,
     List<string> Cons,
     List<FoodItemDto> FeaturedFood,
-    List<AttractionItemDto> FeaturedAttractions
+    List<AttractionItemDto> FeaturedAttractions,
+    List<HotelItemDto> HotelPreview,
+    bool HotelsAvailable
 );
 
 public record ScoreBreakdownDto(

@@ -1,24 +1,4 @@
-namespace WhereToStayInJapan.Infrastructure.Adapters.Hotels;
-
-public record HotelItem(
-    string HotelId,
-    string Name,
-    string? ImageUrl,
-    decimal PricePerNightJpy,
-    double ReviewRating,
-    string DeepLinkUrl,
-    double DistanceToStationKm);
-
-public record HotelSearchParams(
-    double Lat,
-    double Lng,
-    DateOnly CheckIn,
-    DateOnly CheckOut,
-    string BudgetTier,
-    int Page = 1,
-    int PageSize = 10);
-
-public interface IHotelProvider
-{
-    Task<IReadOnlyList<HotelItem>> SearchAsync(HotelSearchParams searchParams, CancellationToken ct = default);
-}
+// Interface and types moved to Application.Interfaces — see IHotelProvider.cs there
+global using IHotelProvider = WhereToStayInJapan.Application.Interfaces.IHotelProvider;
+global using HotelItem = WhereToStayInJapan.Application.Interfaces.HotelItem;
+global using HotelSearchParams = WhereToStayInJapan.Application.Interfaces.HotelSearchParams;

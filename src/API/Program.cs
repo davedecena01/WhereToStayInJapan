@@ -4,6 +4,7 @@ using Serilog;
 using WhereToStayInJapan.API.Middleware;
 using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Application.Services;
+// ReSharper disable once RedundantUsingDirective (kept for explicitness at registration site)
 using WhereToStayInJapan.Application.Services.Interfaces;
 using WhereToStayInJapan.Application.Validation;
 using WhereToStayInJapan.Domain.Services;
@@ -83,6 +84,7 @@ try
     // Domain services
     builder.Services.AddSingleton<RegionGroupingService>();
     builder.Services.AddScoped<ItineraryNormalizer>();
+    builder.Services.AddScoped<IScoringService, ScoringService>();
 
     // File extractors
     builder.Services.AddScoped<IItineraryExtractor, PlainTextExtractor>();
