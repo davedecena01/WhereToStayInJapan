@@ -1,70 +1,105 @@
 # Session Resume — Where To Stay In Japan
 
-_Last updated: 2026-04-09_
+**Last updated:** 2026-04-11  
+**Current branch:** `feature/phase-1-itinerary-parsing`  
+**Project phase:** Phase 1 complete — backend + frontend committed, Phase 2 next
 
 ---
 
 ## What This Is
 
-This file is a handover document. Read it at the start of a new session to quickly understand where the project stands and what to do next.
+This file is a handover document. Read it at the start of a new session to understand exactly where the project stands and what to do next.
 
 ---
 
 ## Current State
 
-**No code has been written yet.** The repository contains comprehensive planning documentation only.
+### Phase 0 — Complete ✅
 
-### What Exists
+- Full .NET 10 solution with all layers (API, Application, Domain, Infrastructure, Shared)
+- All domain entities + EF Core `InitialCreate` migration applied to Supabase
+- 15 station areas, 41 food items, 51 attractions seeded via Supabase MCP (not via DataSeeder)
+- Mock adapters for AI, Hotels, Maps all wired and working
+- `GET /api/health` returns `{ "status": "healthy", "db": "connected" }` ✅
+- `GET /api/areas/{id}/food` and `/attractions` endpoints exist and work
+- CI pipeline (dotnet test + ng build) in `.github/workflows/ci.yml`
+- 3 unit tests for `RegionGroupingService.HaversineDistance` passing
+- `DataSeeder` wrapped in try/catch to survive Npgsql write bug on startup
+- Committed and pushed to `feature/phase-0-bootstrap`
 
-| Location | Contents |
-|---|---|
-| `docs/product/project-spec.md` | Full MVP product spec, user stories, success criteria |
-| `docs/product/user-flows.md` | User journey flows |
-| `docs/technical/system-architecture.md` | Architecture diagram, layer responsibilities, provider abstraction pattern |
-| `docs/technical/technical-spec.md` | Full technical specification |
-| `docs/technical/data-model.md` | Entity definitions and DB schema |
-| `docs/technical/api-contracts.md` | API endpoint contracts and DTOs |
-| `docs/technical/backend.md` | Backend coding standards, NuGet packages, project structure |
-| `docs/technical/ui.md` | Angular structure, component design, styling spec |
-| `docs/technical/ai-strategy.md` | AI provider abstraction, fallback modes, prompt design |
-| `docs/technical/maps-and-routing.md` | Nominatim/OSRM usage, caching, transit approximation |
-| `docs/technical/hotel-integration.md` | Rakuten Travel API integration spec |
-| `docs/technical/auth-and-storage.md` | Guest session (localStorage), Phase 2 auth plan |
-| `docs/technical/deployment.md` | Vercel + Railway + Supabase deployment guide |
-| `docs/technical/observability.md` | Logging and analytics scope |
-| `docs/planning/execution-plan.md` | Phase-by-phase implementation checklist (the build order) |
-| `docs/planning/phased-roadmap.md` | MVP, Phase 2, and Phase 3 feature roadmap |
-| `docs/planning/risks-and-open-questions.md` | Known risks and deferred decisions |
-| `.claude/CLAUDE.md` | Claude behavior rules for this project |
+### Phase 1 — Complete ✅
+
+**Branch:** `feature/phase-1-itinerary-parsing` (2 commits, not yet pushed/PR'd)
+
+**Backend:**
+- `IAIProvider` moved to Application layer (correct layering)
+- `IItineraryExtractor` abstraction + PlainText/PDF/Docx extractors
+- `ItineraryParsingService` fully implemented
+- `ItineraryNormalizer` bug fix: `IsMultiRegion` also checks `regions.Count > 1`
+- 18 `ItineraryNormalizerTests` passing (21 total in Domain.Tests)
+- `dotnet test`: 23 passed, 0 failed
+
+**Frontend:**
+- `core/models/itinerary.models.ts` — TS interfaces matching backend DTOs
+- `core/services/api.service.ts` — parseText + parseFile
+- `core/services/session.service.ts` — localStorage, 7-day TTL
+- `core/stores/itinerary.store.ts` — signals: parsedItinerary, loading, error, userPreferences
+- `ItineraryInputComponent` — preferences form, file drag-drop, textarea, parse button
+- `ItineraryReviewComponent` — destination list, low-confidence/multi-region banners
+- `ResultsPlaceholderComponent` — Phase 2 stub
+- `AppComponent` — session resume banner
+- `styles.scss` — CSS vars + Google Fonts
+- `ng build` and `ng test`: passing
 
 ---
 
-## What to Build Next: Phase 0 — Project Bootstrap
+## Known Issues
 
-**All implementation tasks are in [`docs/planning/execution-plan.md`](planning/execution-plan.md).** That is the authoritative source of truth for build order. Do not deviate from it.
+### Npgsql 10.0.1 + Supabase Supavisor write bug ⚠️
+- `SaveChangesAsync` throws `ObjectDisposedException: ManualResetEventSlim` on any write
+- All write operations are affected (logs, future session persistence, etc.)
+- Tried and failed: `No Reset On Close=true`, `Pooling=false`, `CancellationToken.None`, both pooler modes
+- Npgsql 10.0.1 is already the latest for .NET 10; direct IPv6 is blocked at network level
+- **Phase 1 is unaffected** — parsing is fully in-memory; no DB writes needed
+- Phase 2+ will need this resolved before recommendation logs can be written
 
-Phase 0 is the starting point. It produces a running skeleton with mock adapters — no live API keys required.
+---
 
-### Phase 0 Checklist (nothing is done yet)
+## Pending Tasks (in order)
 
-- [ ] Initialize .NET solution with 5 projects: `API`, `Application`, `Domain`, `Infrastructure`, `Shared`
-- [ ] Add 3 xUnit test projects: `Domain.Tests`, `Application.Tests`, `API.Tests`
-- [ ] Initialize Angular project (standalone, signals, SCSS, no SSR)
-- [ ] Set up Supabase dev project and paste connection string into `appsettings.Development.json`
-- [ ] Define all domain entities and configure `ApplicationDbContext`
-- [ ] Create and apply initial EF Core migration
-- [ ] Implement all provider interfaces: `IAIProvider`, `IGeocodeProvider`, `IRoutingProvider`, `IHotelProvider`
-- [ ] Implement `MockAIAdapter`, `MockGeocodeAdapter`, `MockHotelAdapter` (hardcoded test data)
-- [ ] Implement `ICacheService` + `PostgresCacheService`
-- [ ] Implement `DataSeeder` (10 station areas seeded, curated food/attractions, routing cache warm-up)
-- [ ] Implement `GET /api/health` endpoint
-- [ ] Register all services in `Program.cs` (mock mode by default for dev)
-- [ ] Configure CORS for `http://localhost:4200`
-- [ ] Add `GlobalExceptionMiddleware` returning `ProblemDetails`
-- [ ] Write 3 unit tests for `RegionGroupingService.HaversineDistance()`
-- [ ] Create `.github/workflows/ci.yml` (runs `dotnet test` + `ng build` on push)
-- [ ] Verify: `dotnet test` passes, `ng build` passes, `/api/health` returns `{"status":"healthy"}`
-- [ ] First commit: `feat: project bootstrap with mock adapters`
+### 1. Phase 2 — Recommendation Engine (backend)
+
+Phase 1 is complete. Next work is the deterministic recommendation engine.
+
+See `docs/planning/execution-plan.md` Phase 2 for detailed scope. High-level:
+- `POST /api/recommendations` endpoint
+- Score candidates by: travel time (0.4), hotel cost (0.3), station proximity (0.15), food access (0.1), shopping (0.05)
+- `TravelTimeService` using seeded OSRM-style fallback data
+- `RecommendationService` orchestrating scoring + explanation
+- Unit tests for scoring logic
+
+### 2. Phase 2 — Results page (frontend)
+
+- Replace `ResultsPlaceholderComponent` with real `ResultsComponent`
+- Call `POST /api/recommendations` after "Looks Good →"
+- Display ranked area cards with scores, pros/cons, explanations
+- Hotel preview rows with deep-link buttons
+
+---
+
+## Resume Prompt
+
+Use this verbatim to continue in a new Claude session:
+
+---
+
+> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 1 is complete. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
+>
+> Key context:
+> - Branch: `feature/phase-1-itinerary-parsing` (2 commits ahead of origin, not yet pushed/PR'd)
+> - All Phase 1 backend + frontend work is committed and clean
+> - Next: Phase 2 — deterministic recommendation engine (backend) + results page (frontend)
+> - CLAUDE.md rules apply: no commits to main, thin controllers, mock-first, token-efficient responses
 
 ---
 
@@ -72,51 +107,37 @@ Phase 0 is the starting point. It produces a running skeleton with mock adapters
 
 | Phase | Goal | Status |
 |---|---|---|
-| **Phase 0** | Running skeleton. Mock adapters. CI passing. | **Not started** |
-| **Phase 1** | Itinerary upload/paste, parsing, review, session save | Not started |
+| **Phase 0** | Running skeleton. Mock adapters. CI passing. | ✅ Complete |
+| **Phase 1** | Itinerary upload/paste, parsing, review, session save | ✅ Complete |
 | **Phase 2** | Deterministic recommendation engine with travel time scoring | Not started |
-| **Phase 3** | Gemini AI integration (parsing, explanations, chat, food) | Not started |
+| **Phase 3** | Gemini AI integration (parsing, explanations, chat) | Not started |
 | **Phase 4** | Rakuten hotel search, pagination, deep-link click-out | Not started |
 | **Phase 5** | Seed content, sakura theme, accessibility, responsive polish | Not started |
 | **Phase 6** | Production deployment (Vercel + Railway + Supabase) | Not started |
 
 ---
 
-## Key Architecture Decisions Already Made
+## Key Architecture Decisions
 
-These are locked in. Do not re-litigate them.
-
-- **Stack:** Angular 17 (standalone, signals) + .NET 8 Web API + PostgreSQL
-- **AI:** Gemini Flash free tier with `RulesOnlyAdapter` fallback — never AI-only
-- **Scoring:** Deterministic scoring engine. AI is only for explanations + suggestions, never for ranking
-- **Providers:** All external integrations (`IAIProvider`, `IGeocodeProvider`, `IRoutingProvider`, `IHotelProvider`) are behind interfaces with cache decorators
-- **No auth in MVP:** Guest-only with localStorage session (30-day TTL)
+- **Stack:** Angular (standalone, signals) + .NET 10 Web API + PostgreSQL (Supabase)
+- **AI:** `MockAIAdapter` in dev (`AI:Mode = "mock"`), `RulesOnlyAdapter` for regex-only, `GeminiAdapter` for Phase 3
+- **Scoring:** Deterministic scoring engine only — AI is for explanations, never ranking
+- **Providers:** All external integrations behind interfaces with cache decorators
+- **No auth in MVP:** Guest-only, localStorage session
 - **No in-app booking:** Rakuten deep-link only
-- **Hosting:** Vercel (frontend) + Railway (backend) + Supabase (PostgreSQL) — all free tier
+- **Hosting:** Vercel (frontend) + Railway (backend) + Supabase (PostgreSQL)
 
----
+## Key Files
 
-## Open Questions (deferred decisions)
-
-See `docs/planning/risks-and-open-questions.md` for full context.
-
-| # | Question | Decision |
-|---|---|---|
-| 1 | Transit time accuracy (OSRM driving × 1.3 vs hardcoded transit times) | Use ×1.3 for V1; add hardcoded seed times as enhancement |
-| 2 | Rakuten affiliate approval timeline | Register early; demo uses direct links until approved |
-| 3 | Angular SSR compatibility | Design SSR-compatible now; activate in Phase 3 |
-| 4 | AI chat scope (full edit vs Q&A only) | Implement full edit if time allows; fall back to Q&A only |
-| 5 | Multi-language | English only for MVP; include `name_ja` in seed JSON for Phase 3 backfill |
-
----
-
-## How to Start a New Session
-
-1. Read this file.
-2. Open `docs/planning/execution-plan.md`.
-3. Find the first unchecked task in the current phase.
-4. Check `docs/technical/` for the relevant spec before implementing.
-5. Follow the architecture in `docs/technical/system-architecture.md`.
-6. Follow Claude behavior rules in `.claude/CLAUDE.md`.
-
-Always check specs before building. Always build mock adapters before real adapters. Always keep controllers thin.
+| File | Purpose |
+|---|---|
+| `src/API/Program.cs` | All DI registrations |
+| `src/Application/Interfaces/IAIProvider.cs` | AI abstraction (Application layer) |
+| `src/Application/Interfaces/IItineraryExtractor.cs` | File extraction abstraction |
+| `src/Application/Services/ItineraryParsingService.cs` | Parse orchestration |
+| `src/Infrastructure/Parsing/` | PlainText, PDF, Docx extractors |
+| `src/Infrastructure/Adapters/AI/RulesOnlyAdapter.cs` | Regex-based parser (active in dev) |
+| `src/Domain/Services/ItineraryNormalizer.cs` | Dedup, region lookup, multi-region flag |
+| `docs/planning/execution-plan.md` | Phase-by-phase build checklist |
+| `docs/technical/api-contracts.md` | API endpoint contracts and DTOs |
+| `docs/technical/ui.md` | Angular structure and component spec |

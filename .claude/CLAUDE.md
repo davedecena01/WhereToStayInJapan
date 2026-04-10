@@ -593,17 +593,39 @@ Do not generate large amounts of low-value test boilerplate.
 
 Claude must never commit or push directly to `main`.
 
+Claude must also not reuse an existing branch if the current task is materially unrelated to that branch’s purpose.
+
 Before any major code, documentation, or structural change, Claude must:
 
 1. check the current git branch
-2. if on `main`, create a new branch before proceeding
-3. use one of these prefixes:
+2. determine whether the current branch is appropriate for the requested task
+3. if the current branch is `main`, create a new branch before proceeding
+4. if the current branch name does not match the current task, create a new branch before proceeding
+5. use a branch name that reflects the current unit of work using one of these prefixes:
    - `feature/description`
    - `fix/description`
    - `refactor/description`
    - `docs/description`
-4. confirm or state the branch name being used
-5. only then proceed with implementation
+6. state the branch name being used before implementation begins
+7. keep changes scoped to that branch purpose only
+
+Claude must treat branch/task mismatch as a workflow violation, not a suggestion.
+
+### Branch Reuse Rules
+
+Claude may reuse the current branch only if the new task is clearly part of the same ongoing unit of work.
+
+Claude must create a new branch when:
+- the task is a different feature
+- the task is a different bug fix
+- the task is a different refactor
+- the task is a different documentation change
+- the existing branch name no longer accurately describes the work being done
+
+Examples:
+- `feature/itinerary-upload` should not be reused for hotel API integration
+- `docs/project-spec` should not be reused for Angular store implementation
+- `fix/parsing-bug` should not be reused for deployment config changes
 
 If branch creation is not possible, Claude must stop and explain the issue before continuing.
 
