@@ -2,13 +2,16 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhereToStayInJapan.API.Middleware;
+using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Application.Services;
 using WhereToStayInJapan.Application.Services.Interfaces;
 using WhereToStayInJapan.Application.Validation;
+using WhereToStayInJapan.Domain.Services;
 using WhereToStayInJapan.Infrastructure.Adapters.AI;
 using WhereToStayInJapan.Infrastructure.Adapters.Hotels;
 using WhereToStayInJapan.Infrastructure.Adapters.Maps;
 using WhereToStayInJapan.Infrastructure.Cache;
+using WhereToStayInJapan.Infrastructure.Parsing;
 using WhereToStayInJapan.Infrastructure.Persistence;
 using WhereToStayInJapan.Infrastructure.Persistence.Repositories;
 using WhereToStayInJapan.Infrastructure.Seed;
@@ -76,6 +79,15 @@ try
         new CachedRoutingProvider(
             new SeededFallbackRoutingProvider(sp.GetRequiredService<ICacheService>()),
             sp.GetRequiredService<ICacheService>()));
+
+    // Domain services
+    builder.Services.AddSingleton<RegionGroupingService>();
+    builder.Services.AddScoped<ItineraryNormalizer>();
+
+    // File extractors
+    builder.Services.AddScoped<IItineraryExtractor, PlainTextExtractor>();
+    builder.Services.AddScoped<IItineraryExtractor, PdfExtractor>();
+    builder.Services.AddScoped<IItineraryExtractor, DocxExtractor>();
 
     // Application services
     builder.Services.AddScoped<IItineraryParsingService, ItineraryParsingService>();

@@ -1,3 +1,4 @@
+using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 
 namespace WhereToStayInJapan.Infrastructure.Adapters.AI;

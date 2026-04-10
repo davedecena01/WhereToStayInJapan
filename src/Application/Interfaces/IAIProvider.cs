@@ -1,6 +1,6 @@
 using WhereToStayInJapan.Domain.Models;
 
-namespace WhereToStayInJapan.Infrastructure.Adapters.AI;
+namespace WhereToStayInJapan.Application.Interfaces;
 
 public interface IAIProvider
 {

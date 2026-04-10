@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 using WhereToStayInJapan.Infrastructure.Cache;
 using WhereToStayInJapan.Shared.Extensions;

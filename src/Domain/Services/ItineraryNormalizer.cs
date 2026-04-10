@@ -28,7 +28,7 @@ public class ItineraryNormalizer(RegionGroupingService regionGrouping)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        var isMultiRegion = regionGrouping.IsMultiRegion(sorted);
+        var isMultiRegion = regionGrouping.IsMultiRegion(sorted) || regions.Count > 1;
 
         return new ParsedItinerary
         {
