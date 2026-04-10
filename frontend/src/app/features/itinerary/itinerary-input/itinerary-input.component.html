@@ -1,0 +1,113 @@
+<main class="input-page">
+  <header class="page-header">
+    <h1>Where Should I Stay in Japan?</h1>
+    <p class="subtitle">Paste your itinerary or upload a file — we'll find the best area to stay based on your plans.</p>
+  </header>
+
+  <!-- Preferences form -->
+  <section class="preferences-section card">
+    <h2>Travel Details</h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="checkin">Check-in</label>
+        <input id="checkin" type="date" [(ngModel)]="preferences.checkin" />
+      </div>
+      <div class="form-group">
+        <label for="checkout">Check-out</label>
+        <input id="checkout" type="date" [(ngModel)]="preferences.checkout" />
+      </div>
+      <div class="form-group form-group--small">
+        <label for="travelers">Travelers</label>
+        <input id="travelers" type="number" min="1" max="10" [(ngModel)]="preferences.travelers" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Budget per night</label>
+      <div class="radio-group">
+        @for (opt of budgetOptions; track opt.value) {
+          <label class="radio-label">
+            <input type="radio" name="budget" [value]="opt.value" [(ngModel)]="preferences.budget_tier" />
+            {{ opt.label }}
+          </label>
+        }
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Preferred atmosphere <span class="hint">(optional, pick any)</span></label>
+      <div class="checkbox-group">
+        @for (opt of atmosphereOptions; track opt.value) {
+          <label class="checkbox-label" [class.selected]="preferences.preferred_atmosphere.includes(opt.value)">
+            <input type="checkbox"
+                   [checked]="preferences.preferred_atmosphere.includes(opt.value)"
+                   (change)="toggleAtmosphere(opt.value)" />
+            {{ opt.label }}
+          </label>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- File upload -->
+  <section class="upload-section card">
+    <h2>Upload Itinerary</h2>
+
+    @if (!selectedFile()) {
+      <div class="drop-zone"
+           [class.drag-over]="dragOver()"
+           (dragover)="onDragOver($event)"
+           (dragleave)="onDragLeave()"
+           (drop)="onDrop($event)"
+           (click)="fileInput.click()">
+        <span class="drop-icon">📄</span>
+        <p>Drag &amp; drop a PDF, DOCX, or TXT file here</p>
+        <p class="hint">or click to browse</p>
+      </div>
+    } @else {
+      <div class="file-selected">
+        <span class="file-icon">📎</span>
+        <span class="file-name">{{ selectedFile()!.name }}</span>
+        <button type="button" class="btn-clear" (click)="clearFile()">✕ Remove</button>
+      </div>
+    }
+
+    <input #fileInput type="file" accept=".pdf,.docx,.txt" class="hidden-input" (change)="onFileSelect($event)" />
+  </section>
+
+  <!-- Text paste -->
+  <section class="text-section card">
+    <h2>Or Paste Your Itinerary</h2>
+    <textarea
+      placeholder="Paste your itinerary here — e.g., Day 1: Arrive Tokyo. Visit Senso-ji. Lunch in Asakusa..."
+      rows="8"
+      [disabled]="!!selectedFile()"
+      [(ngModel)]="rawText">
+    </textarea>
+    @if (selectedFile()) {
+      <p class="hint">Remove the uploaded file to paste text instead.</p>
+    }
+  </section>
+
+  <!-- Error banner -->
+  @if (error()) {
+    <div class="error-banner" role="alert">
+      <strong>Error:</strong> {{ error() }}
+    </div>
+  }
+
+  <!-- Submit -->
+  <div class="submit-row">
+    <button
+      class="btn-primary"
+      [disabled]="!canSubmit"
+      (click)="submit()">
+      @if (loading()) {
+        <span class="spinner" aria-hidden="true"></span> Parsing&hellip;
+      } @else {
+        Parse My Itinerary →
+      }
+    </button>
+  </div>
+</main>

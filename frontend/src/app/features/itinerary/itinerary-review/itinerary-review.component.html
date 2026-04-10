@@ -1,0 +1,80 @@
+@if (itinerary(); as parsed) {
+  <main class="review-page">
+    <header class="page-header">
+      <h1>Review Your Itinerary</h1>
+      <p class="subtitle">We found {{ parsed.destinations.length }} destination(s). Does this look right?</p>
+    </header>
+
+    <!-- Low confidence warning -->
+    @if (isLowConfidence()) {
+      <div class="banner banner--warning" role="alert">
+        <strong>⚠ Low confidence parse.</strong>
+        We may have missed some destinations. Review carefully before continuing.
+      </div>
+    }
+
+    <!-- Multi-region info -->
+    @if (isMultiRegion()) {
+      <div class="banner banner--info" role="status">
+        <strong>ℹ Multiple regions detected:</strong>
+        {{ parsed.regions_detected.join(', ') }}.
+        We'll recommend separate stay bases for each region.
+      </div>
+    }
+
+    <!-- Destination list -->
+    <section class="card destinations-card">
+      <h2>Destinations</h2>
+
+      @if (parsed.destinations.length === 0) {
+        <p class="empty-state">No destinations were found. Please go back and try again.</p>
+      } @else {
+        <ul class="destination-list">
+          @for (dest of parsed.destinations; track dest.name) {
+            <li class="destination-item">
+              <div class="dest-main">
+                <span class="dest-name">{{ dest.name }}</span>
+                @if (dest.day_number) {
+                  <span class="tag tag--day">Day {{ dest.day_number }}</span>
+                }
+                @if (dest.activity_type) {
+                  <span class="tag tag--activity">{{ dest.activity_type }}</span>
+                }
+              </div>
+              @if (dest.city || dest.region) {
+                <div class="dest-meta">
+                  @if (dest.city) {
+                    <span class="tag tag--city">{{ dest.city }}</span>
+                  }
+                  @if (dest.region) {
+                    <span class="tag tag--region">{{ dest.region }}</span>
+                  }
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <!-- Travel dates (if detected) -->
+    @if (parsed.travel_dates) {
+      <section class="card">
+        <h2>Travel Dates</h2>
+        <p>{{ parsed.travel_dates.start }} → {{ parsed.travel_dates.end }}</p>
+      </section>
+    }
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn-secondary" (click)="goBack()">← Edit</button>
+      <button class="btn-primary" [disabled]="parsed.destinations.length === 0" (click)="confirmAndContinue()">
+        Looks Good →
+      </button>
+    </div>
+  </main>
+} @else {
+  <div class="empty-state-page">
+    <p>No itinerary to review. <a routerLink="/">Start over</a></p>
+  </div>
+}

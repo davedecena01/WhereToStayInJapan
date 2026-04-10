@@ -1,0 +1,245 @@
+.input-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    color: var(--color-navy);
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: #555;
+    font-size: 1rem;
+  }
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    font-size: 1.1rem;
+    color: var(--color-navy);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f0e8e0;
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 140px;
+
+  &--small {
+    flex: 0 0 100px;
+    min-width: 100px;
+  }
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-navy);
+  }
+
+  input[type='date'],
+  input[type='number'] {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+
+    &:focus {
+      border-color: var(--color-sakura);
+      box-shadow: 0 0 0 2px rgba(248, 167, 187, 0.25);
+    }
+  }
+
+  margin-bottom: 1.25rem;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.radio-label,
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  transition: border-color 0.15s, background 0.15s;
+
+  input { display: none; }
+
+  &:hover {
+    border-color: var(--color-sakura);
+  }
+
+  &.selected {
+    background: var(--color-sakura);
+    border-color: var(--color-sakura);
+    color: #fff;
+  }
+}
+
+.radio-label input[type='radio']:checked + span,
+.radio-label:has(input:checked) {
+  background: var(--color-sakura);
+}
+
+// Drop zone
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+
+  p { color: #666; margin: 0.25rem 0; }
+
+  .drop-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+
+  &:hover,
+  &.drag-over {
+    border-color: var(--color-sakura);
+    background: #fff5f8;
+  }
+}
+
+.file-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f8f4f0;
+  border-radius: 8px;
+
+  .file-icon { font-size: 1.25rem; }
+  .file-name { flex: 1; font-size: 0.9rem; color: var(--color-navy); }
+}
+
+.btn-clear {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #666;
+
+  &:hover { border-color: #f00; color: #f00; }
+}
+
+.hidden-input { display: none; }
+
+// Textarea
+textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--color-sakura);
+    box-shadow: 0 0 0 2px rgba(248, 167, 187, 0.25);
+  }
+
+  &:disabled {
+    background: #f5f5f5;
+    color: #999;
+  }
+}
+
+// Error
+.error-banner {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+// Submit
+.submit-row {
+  text-align: right;
+}
+
+.btn-primary {
+  background: var(--color-navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #253d6a;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
