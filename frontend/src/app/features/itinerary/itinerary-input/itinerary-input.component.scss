@@ -243,3 +243,38 @@ textarea {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+// ── Responsive ───────────────────────────────────────────────────────────────
+
+@media (max-width: 600px) {
+  .input-page {
+    padding: 1rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-group--small {
+    flex: 1;
+    min-width: unset;
+  }
+
+  .submit-row {
+    text-align: center;
+  }
+
+  .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .drop-zone {
+    padding: 1.5rem 1rem;
+  }
+}

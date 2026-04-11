@@ -19,7 +19,9 @@
     </div>
   </div>
 
-  <button class="btn-book" (click)="onBookClick()">
+  <button class="btn-book"
+          [attr.aria-label]="'Book ' + hotel().name + ' on Rakuten'"
+          (click)="onBookClick()">
     Book on Rakuten →
   </button>
 </div>

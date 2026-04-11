@@ -87,3 +87,22 @@
   font-size: 0.9rem;
   color: var(--text-muted, #777);
 }
+
+@media (max-width: 600px) {
+  .hotel-list-page {
+    padding: 1rem 0.75rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .pagination {
+    gap: 0.5rem;
+  }
+
+  .btn-page {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+}

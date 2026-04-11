@@ -67,3 +67,19 @@
 
   &:hover { background: #a8555c; }
 }
+
+@media (max-width: 500px) {
+  .hotel-card {
+    flex-wrap: wrap;
+  }
+
+  .hotel-thumb {
+    width: 100%;
+    height: 140px;
+  }
+
+  .btn-book {
+    width: 100%;
+    text-align: center;
+  }
+}

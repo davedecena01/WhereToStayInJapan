@@ -1,8 +1,8 @@
 # Session Resume — Where To Stay In Japan
 
-**Last updated:** 2026-04-12  
-**Current branch:** `feature/phase-4-rakuten-hotels`  
-**Project phase:** Phase 4 complete — Rakuten hotel integration + hotel list page committed, Phase 5 next
+**Last updated:** 2026-04-12 (Phase 5)  
+**Current branch:** `feature/phase-5-polish`  
+**Project phase:** Phase 5 complete — responsive polish, ARIA labels, keyboard nav, global CSS vars committed, Phase 6 next
 
 ---
 
@@ -81,7 +81,7 @@ This file is a handover document. Read it at the start of a new session to under
 
 ### Phase 4 — Complete ✅
 
-**Branch:** `feature/phase-4-rakuten-hotels` (not yet pushed/PR'd)
+**Branch:** `feature/phase-4-rakuten-hotels` (pushed, PR #3 open → `feature/phase-3-gemini-ai`)
 
 **Backend:**
 - `RakutenHotelAdapter` — full implementation: price range mapping, Rakuten API response deserialization, min-rating filter, deep-link building with optional affiliate ID
@@ -102,12 +102,28 @@ This file is a handover document. Read it at the start of a new session to under
 - `app.routes.ts`: `/hotels/:areaId` route
 - `ng build` passing
 
+### Phase 5 — Complete ✅
+
+**Branch:** `feature/phase-5-polish` (not yet pushed/PR'd)
+
+**Frontend:**
+- Global CSS variables (`--primary`, `--text-primary`, `--text-muted`, `--border`, `--surface`) defined in `styles.scss`
+- Skip-to-main-content link in `app.html` for keyboard nav
+- `<main id="main-content">` wrapper in `app.html`
+- Drop zone: `role="button"`, `tabindex="0"`, `aria-label`, keyboard activation (`keydown.enter`/`keydown.space`)
+- Hotel card book button: `aria-label` with hotel name
+- Pagination: `<nav aria-label>`, `aria-label` on prev/next, `aria-live` on page indicator
+- `aria-busy` on parse submit button during loading
+- Mobile responsive breakpoints (≤600px) added to all components: input page, review page, results page, hotel list, app shell
+
+**Seed data:** Already complete from Phase 4 — 15 areas, 41 food items, 51 attractions in `src/Infrastructure/Seed/`
+
 **Still stub — NOT yet implemented:**
 
 | File | Phase | Notes |
 |---|---|---|
-| `src/Infrastructure/Adapters/Maps/NominatimAdapter.cs` | Phase 5+ | Throws — MockGeocodeAdapter active in dev |
-| `src/Infrastructure/Adapters/Maps/OsrmAdapter.cs` | Phase 5+ | Throws — SeededFallbackRoutingProvider active |
+| `src/Infrastructure/Adapters/Maps/NominatimAdapter.cs` | Phase 6 | Throws — MockGeocodeAdapter active in dev |
+| `src/Infrastructure/Adapters/Maps/OsrmAdapter.cs` | Phase 6 | Throws — SeededFallbackRoutingProvider active |
 
 ---
 
@@ -128,15 +144,15 @@ This file is a handover document. Read it at the start of a new session to under
 
 ## Pending Tasks (in order)
 
-### 1. Push Phase 4 branch + create PR
+### 1. Push Phase 5 branch + create PR
 
-Branch `feature/phase-4-rakuten-hotels` has commits and is not yet pushed.
+Branch `feature/phase-5-polish` has commits and is not yet pushed.
 
 ```bash
-"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" push -u origin feature/phase-4-rakuten-hotels
+"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" push -u origin feature/phase-5-polish
 ```
 
-Then create a PR. Base: `feature/phase-3-gemini-ai`.
+Then create a PR. Base: `feature/phase-4-rakuten-hotels`.
 
 **To enable real Rakuten hotels locally:**
 1. Register at `https://webservice.rakuten.co.jp/` and get an `applicationId`
@@ -144,9 +160,9 @@ Then create a PR. Base: `feature/phase-3-gemini-ai`.
 3. Set `Hotels:Provider` to `"rakuten"`
 4. Verify: go to results → click "View all hotels →" → see real hotels
 
-### 2. Phase 5 — Seed content, sakura theme, accessibility, responsive polish
+### 2. Phase 6 — Production deployment (Vercel + Railway + Supabase)
 
-Create new branch `feature/phase-5-polish` before starting.
+Create new branch `feature/phase-6-deployment` before starting.
 
 ---
 
@@ -156,13 +172,13 @@ Use this verbatim to continue in a new Claude session:
 
 ---
 
-> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 4 is complete. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
+> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 5 is complete. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
 >
 > Key context:
-> - Branch: `feature/phase-4-rakuten-hotels` (commits ahead of origin, not yet pushed/PR'd)
-> - All Phase 4 backend + frontend work is committed and clean — `dotnet test` 32 passed, `ng build` passing
+> - Branch: `feature/phase-5-polish` (commits ahead of origin, not yet pushed/PR'd)
+> - All Phase 5 frontend polish is committed and clean — `dotnet test` 32 passed, `ng build` passing
 > - `git` command in bash fails with `_lc: command not found` — use full path workaround (see Known Issues)
-> - Next: push Phase 4 branch, create PR, then start Phase 5 — seed content, sakura theme, accessibility, responsive polish on a new branch
+> - Next: push Phase 5 branch, create PR, then start Phase 6 — production deployment (Vercel + Railway + Supabase) on a new branch
 > - CLAUDE.md rules apply: no commits to main, thin controllers, mock-first, token-efficient responses
 
 ---
@@ -176,7 +192,7 @@ Use this verbatim to continue in a new Claude session:
 | **Phase 2** | Deterministic recommendation engine with travel time scoring | ✅ Complete |
 | **Phase 3** | Gemini AI integration (parsing, explanations, chat) | ✅ Complete |
 | **Phase 4** | Rakuten hotel search, pagination, deep-link click-out | ✅ Complete |
-| **Phase 5** | Seed content, sakura theme, accessibility, responsive polish | Not started |
+| **Phase 5** | Seed content, sakura theme, accessibility, responsive polish | ✅ Complete |
 | **Phase 6** | Production deployment (Vercel + Railway + Supabase) | Not started |
 
 ---

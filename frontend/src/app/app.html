@@ -1,5 +1,6 @@
 <div class="app-shell">
-  <nav class="app-nav">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="app-nav" aria-label="Site navigation">
     <a class="nav-brand" routerLink="/">
       <span class="nav-logo">🌸</span>
       Where To Stay in Japan
@@ -16,5 +17,7 @@
     </div>
   }
 
-  <router-outlet />
+  <main id="main-content">
+    <router-outlet />
+  </main>
 </div>

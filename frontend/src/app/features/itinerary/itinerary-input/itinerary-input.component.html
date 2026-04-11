@@ -56,12 +56,17 @@
 
     @if (!selectedFile()) {
       <div class="drop-zone"
+           role="button"
+           tabindex="0"
+           aria-label="Upload itinerary file. Press Enter or Space to browse."
            [class.drag-over]="dragOver()"
            (dragover)="onDragOver($event)"
            (dragleave)="onDragLeave()"
            (drop)="onDrop($event)"
-           (click)="fileInput.click()">
-        <span class="drop-icon">📄</span>
+           (click)="fileInput.click()"
+           (keydown.enter)="fileInput.click()"
+           (keydown.space)="$event.preventDefault(); fileInput.click()">
+        <span class="drop-icon" aria-hidden="true">📄</span>
         <p>Drag &amp; drop a PDF, DOCX, or TXT file here</p>
         <p class="hint">or click to browse</p>
       </div>
@@ -102,9 +107,11 @@
     <button
       class="btn-primary"
       [disabled]="!canSubmit"
+      [attr.aria-busy]="loading()"
       (click)="submit()">
       @if (loading()) {
-        <span class="spinner" aria-hidden="true"></span> Parsing&hellip;
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Parsing&hellip;</span>
       } @else {
         Parse My Itinerary →
       }

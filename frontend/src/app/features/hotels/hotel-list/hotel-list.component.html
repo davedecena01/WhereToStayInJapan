@@ -30,15 +30,21 @@
 
       <!-- Pagination -->
       @if (res.total > 10) {
-        <div class="pagination">
-          <button class="btn-page" [disabled]="currentPage() === 1" (click)="loadPage(currentPage() - 1)">
+        <nav class="pagination" aria-label="Hotel results pages">
+          <button class="btn-page"
+                  [disabled]="currentPage() === 1"
+                  aria-label="Previous page"
+                  (click)="loadPage(currentPage() - 1)">
             ← Prev
           </button>
-          <span class="page-info">Page {{ currentPage() }}</span>
-          <button class="btn-page" [disabled]="!res.has_more" (click)="loadPage(currentPage() + 1)">
+          <span class="page-info" aria-live="polite">Page {{ currentPage() }}</span>
+          <button class="btn-page"
+                  [disabled]="!res.has_more"
+                  aria-label="Next page"
+                  (click)="loadPage(currentPage() + 1)">
             Next →
           </button>
-        </div>
+        </nav>
       }
     }
   }
