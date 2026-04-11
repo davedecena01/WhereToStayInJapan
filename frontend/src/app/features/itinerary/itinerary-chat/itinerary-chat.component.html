@@ -1,0 +1,55 @@
+<section class="chat-panel">
+  <h2 class="chat-title">Refine with AI</h2>
+
+  <!-- Message list -->
+  <div class="message-list" #messageList role="log" aria-live="polite" aria-label="Chat messages">
+    @for (msg of messages(); track msg.timestamp) {
+      <div class="message" [class.message--user]="msg.role === 'user'" [class.message--assistant]="msg.role === 'assistant'">
+        <p class="message-text">{{ msg.text }}</p>
+
+        @if (msg.updatedItinerary) {
+          <div class="update-proposal">
+            <p class="update-label">AI found {{ msg.updatedItinerary.destinations.length }} destination(s) in this text.</p>
+            <button class="btn-accept" (click)="acceptUpdate(msg.updatedItinerary!)">
+              Accept Updated Itinerary
+            </button>
+          </div>
+        }
+
+        <time class="message-time">{{ msg.timestamp | date:'HH:mm' }}</time>
+      </div>
+    }
+
+    @if (isSending()) {
+      <div class="message message--assistant message--typing" aria-label="AI is responding">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    }
+  </div>
+
+  <!-- Error -->
+  @if (error()) {
+    <p class="chat-error" role="alert">{{ error() }}</p>
+  }
+
+  <!-- Input row -->
+  <div class="input-row">
+    <textarea
+      class="chat-input"
+      [value]="inputText()"
+      (input)="inputText.set($any($event.target).value)"
+      (keydown)="onKeydown($event)"
+      placeholder="Ask a question or paste itinerary text…"
+      rows="2"
+      [disabled]="isSending()"
+      aria-label="Chat message input"
+    ></textarea>
+    <button
+      class="btn-send"
+      (click)="send()"
+      [disabled]="!inputText().trim() || isSending()"
+      aria-label="Send message"
+    >Send</button>
+  </div>
+  <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+</section>

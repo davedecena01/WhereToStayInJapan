@@ -123,3 +123,42 @@ export interface ApiError {
   code: string;
   retryable: boolean;
 }
+
+// ── Chat models ────────────────────────────────────────────────────────────
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  text: string;
+  timestamp: Date;
+  updatedItinerary?: ChatItinerary;
+}
+
+/** Matches the backend ChatResponseDto (camelCase on the wire) */
+export interface ChatResponse {
+  message: string;
+  updatedItinerary: ChatItinerary | null;
+  hasItineraryUpdate: boolean;
+}
+
+/** Matches ParsedItineraryDto serialized to camelCase */
+export interface ChatItinerary {
+  destinations: ChatDestination[];
+  regionsDetected: string[];
+  isMultiRegion: boolean;
+  startDate: string | null;
+  endDate: string | null;
+  parsingConfidence: string;
+  clarificationNeeded: boolean;
+  rawText: string | null;
+}
+
+export interface ChatDestination {
+  name: string;
+  city: string | null;
+  region: string | null;
+  dayNumber: number | null;
+  activityType: string | null;
+  lat: number | null;
+  lng: number | null;
+  isAmbiguous: boolean;
+}

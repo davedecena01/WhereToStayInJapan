@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
+import { ChatItinerary, ChatResponse, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -21,5 +21,13 @@ export class ApiService {
 
   getRecommendations(request: RecommendationRequest): Observable<RecommendationResult> {
     return this.http.post<RecommendationResult>(`${this.base}/api/recommendations`, request);
+  }
+
+  sendChatMessage(sessionId: string, message: string, currentItinerary: ChatItinerary | null): Observable<ChatResponse> {
+    return this.http.post<ChatResponse>(`${this.base}/api/chat`, {
+      sessionId,
+      message,
+      currentItinerary
+    });
   }
 }

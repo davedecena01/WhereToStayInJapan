@@ -50,8 +50,9 @@ try
         IAIProvider inner = aiMode.ToLowerInvariant() switch
         {
             "production" => new GeminiAdapter(
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("gemini"),
                 builder.Configuration["AI:GeminiApiKey"] ?? string.Empty,
-                "gemini-1.5-flash"),
+                builder.Configuration["AI:GeminiModel"] ?? "gemini-1.5-flash"),
             "rules_only" => new RulesOnlyAdapter(),
             _ => new MockAIAdapter()
         };

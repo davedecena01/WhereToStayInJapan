@@ -65,6 +65,12 @@
       </section>
     }
 
+    <!-- AI chat refinement -->
+    <app-itinerary-chat
+      [currentItinerary]="chatItinerary()"
+      (itineraryAccepted)="onItineraryAccepted($event)"
+    />
+
     <!-- Actions -->
     <div class="action-row">
       <button class="btn-secondary" (click)="goBack()">← Edit</button>
