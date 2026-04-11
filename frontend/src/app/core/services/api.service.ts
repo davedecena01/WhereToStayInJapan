@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ChatItinerary, ChatResponse, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
+import { ChatItinerary, ChatResponse, HotelClickRequest, HotelSearchResult, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -29,5 +29,21 @@ export class ApiService {
       message,
       currentItinerary
     });
+  }
+
+  getHotels(areaId: string, budgetTier: string, checkin: string, checkout: string, travelers: number, page = 1): Observable<HotelSearchResult> {
+    const params = new URLSearchParams({
+      area_id: areaId,
+      budget_tier: budgetTier,
+      checkin,
+      checkout,
+      travelers: travelers.toString(),
+      page: page.toString()
+    });
+    return this.http.get<HotelSearchResult>(`${this.base}/api/hotels?${params}`);
+  }
+
+  trackHotelClick(req: HotelClickRequest): void {
+    this.http.post(`${this.base}/api/analytics/hotel-click`, req).subscribe({ error: () => {} });
   }
 }

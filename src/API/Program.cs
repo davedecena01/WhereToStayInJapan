@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -65,7 +66,10 @@ try
     {
         IHotelProvider inner = hotelProvider.ToLowerInvariant() switch
         {
-            "rakuten" => new RakutenHotelAdapter(sp.GetRequiredService<IHttpClientFactory>().CreateClient("rakuten")),
+            "rakuten" => new RakutenHotelAdapter(
+                sp.GetRequiredService<IHttpClientFactory>().CreateClient("rakuten"),
+                builder.Configuration,
+                sp.GetRequiredService<ILogger<RakutenHotelAdapter>>()),
             _ => new MockHotelAdapter()
         };
         return new CachedHotelProvider(inner, sp.GetRequiredService<ICacheService>());
@@ -120,7 +124,9 @@ try
         c.BaseAddress = new Uri("https://router.project-osrm.org/"));
 
     // Controllers + CORS
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddJsonOptions(opts =>
+            opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower);
     builder.Services.AddOpenApi();
 
     var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()

@@ -14,7 +14,9 @@ public record HotelItemDto(
 
 public record HotelSearchResultDto(
     List<HotelItemDto> Hotels,
+    int Total,
     int Page,
     int PageSize,
-    bool HasMore
+    bool HasMore,
+    string Provider
 );

@@ -1,0 +1,89 @@
+.hotel-list-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0.25rem 0 0;
+    font-size: 1.5rem;
+  }
+}
+
+.back-link {
+  color: var(--primary, #c0636b);
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover { text-decoration: underline; }
+}
+
+.result-count {
+  color: var(--text-muted, #888);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.hotel-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeleton-card {
+  height: 100px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  margin-bottom: 0.75rem;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.error-banner {
+  padding: 0.75rem 1rem;
+  background: #fdf0ee;
+  border: 1px solid #e8b4ae;
+  border-radius: 8px;
+  color: #c0392b;
+  margin-bottom: 1rem;
+}
+
+.empty-state {
+  color: var(--text-muted, #888);
+  text-align: center;
+  padding: 2rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.btn-page {
+  padding: 0.5rem 1.25rem;
+  background: var(--primary, #c0636b);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { background: #a8555c; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: var(--text-muted, #777);
+}

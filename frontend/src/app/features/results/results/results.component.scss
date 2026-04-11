@@ -297,6 +297,16 @@
 .hotel-price { font-size: 0.85rem; color: #555; font-weight: 600; flex-shrink: 0; }
 .hotel-rating { font-size: 0.8rem; color: var(--color-gold); flex-shrink: 0; }
 
+.view-all-hotels {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--primary, #c0636b);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
 // ── Food tags ─────────────────────────────────────────────────────────────
 
 .tags {

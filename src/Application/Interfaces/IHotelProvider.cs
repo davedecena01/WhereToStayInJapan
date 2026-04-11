@@ -15,6 +15,7 @@ public record HotelSearchParams(
     DateOnly CheckIn,
     DateOnly CheckOut,
     string BudgetTier,
+    int Travelers = 1,
     int Page = 1,
     int PageSize = 10);
 

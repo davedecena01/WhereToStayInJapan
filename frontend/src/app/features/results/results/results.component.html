@@ -119,6 +119,11 @@
                     </a>
                   }
                 </div>
+                <a class="view-all-hotels"
+                   [routerLink]="['/hotels', rec.area_id]"
+                   [queryParams]="{ area: rec.area_name }">
+                  View all hotels →
+                </a>
               </div>
             }
 

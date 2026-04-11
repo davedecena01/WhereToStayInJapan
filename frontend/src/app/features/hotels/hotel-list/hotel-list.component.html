@@ -1,0 +1,45 @@
+<div class="hotel-list-page">
+  <header class="page-header">
+    <a routerLink="/results" class="back-link">← Back to results</a>
+    <h1>Hotels near {{ areaName() }}</h1>
+  </header>
+
+  @if (loading()) {
+    <div class="loading-state">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="skeleton-card"></div>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <div class="error-banner" role="alert">{{ error() }}</div>
+  }
+
+  @if (result(); as res) {
+    @if (res.hotels.length === 0 && !loading()) {
+      <p class="empty-state">No hotels found for this area. Try adjusting your dates or budget.</p>
+    } @else {
+      <p class="result-count">Showing {{ res.hotels.length }} of {{ res.total }} hotels</p>
+
+      <div class="hotel-grid">
+        @for (hotel of res.hotels; track hotel.hotel_id) {
+          <app-hotel-card [hotel]="hotel" (clicked)="onHotelClick($event)" />
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (res.total > 10) {
+        <div class="pagination">
+          <button class="btn-page" [disabled]="currentPage() === 1" (click)="loadPage(currentPage() - 1)">
+            ← Prev
+          </button>
+          <span class="page-info">Page {{ currentPage() }}</span>
+          <button class="btn-page" [disabled]="!res.has_more" (click)="loadPage(currentPage() + 1)">
+            Next →
+          </button>
+        </div>
+      }
+    }
+  }
+</div>

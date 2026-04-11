@@ -1,25 +1,37 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WhereToStayInJapan.Infrastructure.Persistence;
 
 namespace WhereToStayInJapan.API.Controllers;
 
 [ApiController]
 [Route("api/analytics")]
-public class AnalyticsController(ApplicationDbContext db) : ControllerBase
+public class AnalyticsController(
+    ApplicationDbContext db,
+    ILogger<AnalyticsController> logger) : ControllerBase
 {
     [HttpPost("hotel-click")]
-    public async Task<IActionResult> TrackHotelClickAsync(
-        [FromBody] HotelClickRequest request,
-        CancellationToken ct)
+    public IActionResult TrackHotelClick([FromBody] HotelClickRequest request)
     {
-        db.HotelClickLogs.Add(new Domain.Entities.HotelClickLog
+        // Fire-and-forget: do not block or fail the response on DB errors
+        _ = Task.Run(async () =>
         {
-            SessionId = request.SessionId,
-            HotelId = request.HotelId,
-            AreaId = request.AreaId
+            try
+            {
+                db.HotelClickLogs.Add(new Domain.Entities.HotelClickLog
+                {
+                    SessionId = request.SessionId,
+                    HotelId   = request.HotelId,
+                    AreaId    = request.AreaId
+                });
+                await db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Hotel click log write failed (non-critical)");
+            }
         });
 
-        await db.SaveChangesAsync(ct);
         return NoContent();
     }
 }

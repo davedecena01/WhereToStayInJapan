@@ -1,0 +1,25 @@
+<div class="hotel-card">
+  @if (hotel().thumbnail_url) {
+    <img class="hotel-thumb" [src]="hotel().thumbnail_url" [alt]="hotel().name" loading="lazy" />
+  }
+
+  <div class="hotel-info">
+    <h3 class="hotel-name">{{ hotel().name }}</h3>
+
+    <div class="hotel-meta">
+      <span class="hotel-price">{{ formatPrice(hotel().price_per_night_jpy) }}/night</span>
+
+      @if (hotel().review_score != null) {
+        <span class="hotel-rating">★ {{ hotel().review_score!.toFixed(1) }}</span>
+      }
+
+      @if (hotel().distance_to_station_km != null) {
+        <span class="hotel-distance">{{ hotel().distance_to_station_km!.toFixed(1) }} km to station</span>
+      }
+    </div>
+  </div>
+
+  <button class="btn-book" (click)="onBookClick()">
+    Book on Rakuten →
+  </button>
+</div>

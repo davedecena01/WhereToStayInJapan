@@ -152,6 +152,23 @@ export interface ChatItinerary {
   rawText: string | null;
 }
 
+// ── Hotel search models ────────────────────────────────────────────────────
+
+export interface HotelSearchResult {
+  hotels: HotelItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  has_more: boolean;
+  provider: string;
+}
+
+export interface HotelClickRequest {
+  session_id: string;
+  hotel_id: string;
+  area_id: string;
+}
+
 export interface ChatDestination {
   name: string;
   city: string | null;
