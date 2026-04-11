@@ -1,8 +1,8 @@
 # Session Resume — Where To Stay In Japan
 
 **Last updated:** 2026-04-12  
-**Current branch:** `feature/phase-3-gemini-ai`  
-**Project phase:** Phase 3 complete — Gemini AI integration + chat component committed, Phase 4 next
+**Current branch:** `feature/phase-4-rakuten-hotels`  
+**Project phase:** Phase 4 complete — Rakuten hotel integration + hotel list page committed, Phase 5 next
 
 ---
 
@@ -62,7 +62,7 @@ This file is a handover document. Read it at the start of a new session to under
 
 ### Phase 3 — Complete ✅
 
-**Branch:** `feature/phase-3-gemini-ai` (not yet pushed/PR'd)
+**Branch:** `feature/phase-3-gemini-ai` (pushed, PR #2 open → `feature/phase-2-recommendation-engine`)
 
 **Backend:**
 - `GeminiAdapter` fully implemented: `ParseItineraryAsync` (JSON schema prompt + fallback), `GenerateExplanationAsync`, `SuggestFoodAsync`, `SuggestAttractionsAsync`
@@ -79,16 +79,35 @@ This file is a handover document. Read it at the start of a new session to under
 - Embedded in `ItineraryReviewComponent` with `chatItinerary` computed signal for format conversion
 - `ng build` passing
 
+### Phase 4 — Complete ✅
+
+**Branch:** `feature/phase-4-rakuten-hotels` (not yet pushed/PR'd)
+
+**Backend:**
+- `RakutenHotelAdapter` — full implementation: price range mapping, Rakuten API response deserialization, min-rating filter, deep-link building with optional affiliate ID
+- `HotelProviderException` — custom exception for adapter failures
+- `HotelSearchService` — real implementation: fetches area lat/lng from `IStationAreaRepository`, calls `IHotelProvider`, maps to `HotelItemDto`, returns empty on provider failure (non-throwing)
+- `IHotelProvider.HotelSearchParams` — added `Travelers` field
+- `HotelSearchResultDto` — added `Total` and `Provider` fields
+- `Program.cs` — added **snake_case JSON policy** (fixes frontend/backend naming alignment), passes config + logger to `RakutenHotelAdapter`
+- `AnalyticsController` — fire-and-forget hotel click log with try/catch (handles Npgsql write bug gracefully)
+- `dotnet test`: **32 passed, 0 failed**
+
+**Frontend:**
+- `HotelCardComponent` — card with thumbnail, price, rating, "Book on Rakuten →" deep-link button
+- `HotelListComponent` — paginated hotel list page at `/hotels/:areaId`, loads from `GET /api/hotels`
+- `ApiService.getHotels()` + `trackHotelClick()` added
+- `HotelSearchResult`, `HotelClickRequest` interfaces added to `itinerary.models.ts`
+- Results page: "View all hotels →" router link per area card
+- `app.routes.ts`: `/hotels/:areaId` route
+- `ng build` passing
+
 **Still stub — NOT yet implemented:**
 
 | File | Phase | Notes |
 |---|---|---|
-| `src/Infrastructure/Adapters/Maps/NominatimAdapter.cs` | Phase 3+ | Throws — MockGeocodeAdapter active in dev |
-| `src/Infrastructure/Adapters/Maps/OsrmAdapter.cs` | Phase 3+ | Throws — SeededFallbackRoutingProvider active |
-| `src/Infrastructure/Adapters/Hotels/RakutenHotelAdapter.cs` | Phase 4 | Throws — MockHotelAdapter active |
-| `src/Infrastructure/Adapters/Hotels/CachedHotelProvider.cs` | Phase 4 | Needs checking |
-| `src/API/Controllers/HotelController.cs` | Phase 4 | Wired, calls HotelSearchService |
-| `src/API/Controllers/AnalyticsController.cs` | Phase 4 | Wired |
+| `src/Infrastructure/Adapters/Maps/NominatimAdapter.cs` | Phase 5+ | Throws — MockGeocodeAdapter active in dev |
+| `src/Infrastructure/Adapters/Maps/OsrmAdapter.cs` | Phase 5+ | Throws — SeededFallbackRoutingProvider active |
 
 ---
 
@@ -109,29 +128,25 @@ This file is a handover document. Read it at the start of a new session to under
 
 ## Pending Tasks (in order)
 
-### 1. Push Phase 3 branch + create PR
+### 1. Push Phase 4 branch + create PR
 
-Branch `feature/phase-3-gemini-ai` has commits and is not yet pushed.
+Branch `feature/phase-4-rakuten-hotels` has commits and is not yet pushed.
 
 ```bash
-"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" push -u origin feature/phase-3-gemini-ai
+"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" push -u origin feature/phase-4-rakuten-hotels
 ```
 
-Then create a PR. Note: `main` doesn't exist on remote — PR against `feature/phase-2-recommendation-engine` or merge Phase 2 PR first.
+Then create a PR. Base: `feature/phase-3-gemini-ai`.
 
-**To enable real Gemini AI locally:**
-1. Add `AI:GeminiApiKey` to `src/API/appsettings.Development.json`
-2. Change `AI:Mode` to `"production"`
-3. Verify: paste a messy itinerary → see `parsing_confidence: "high"` in review page
+**To enable real Rakuten hotels locally:**
+1. Register at `https://webservice.rakuten.co.jp/` and get an `applicationId`
+2. Add `Hotels__ApiKey=<your_key>` to environment or `appsettings.Development.json`
+3. Set `Hotels:Provider` to `"rakuten"`
+4. Verify: go to results → click "View all hotels →" → see real hotels
 
-### 2. Phase 4 — Rakuten Hotel Integration
+### 2. Phase 5 — Seed content, sakura theme, accessibility, responsive polish
 
-Create new branch `feature/phase-4-rakuten-hotels` before starting.
-
-- `RakutenHotelAdapter.SearchAsync()` with price range + rating filter
-- `GET /api/hotels` paginated endpoint (controller stub already exists)
-- `POST /api/analytics/hotel-click` fire-and-forget (controller stub exists)
-- Angular `HotelListComponent` + `HotelCardComponent` with deep-link
+Create new branch `feature/phase-5-polish` before starting.
 
 ---
 
@@ -141,13 +156,13 @@ Use this verbatim to continue in a new Claude session:
 
 ---
 
-> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 3 is complete. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
+> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 4 is complete. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
 >
 > Key context:
-> - Branch: `feature/phase-3-gemini-ai` (commits ahead of origin, not yet pushed/PR'd)
-> - All Phase 3 backend + frontend work is committed and clean — `dotnet test` 32 passed, `ng build` passing
+> - Branch: `feature/phase-4-rakuten-hotels` (commits ahead of origin, not yet pushed/PR'd)
+> - All Phase 4 backend + frontend work is committed and clean — `dotnet test` 32 passed, `ng build` passing
 > - `git` command in bash fails with `_lc: command not found` — use full path workaround (see Known Issues)
-> - Next: push Phase 3 branch, create PR, then start Phase 4 — Rakuten hotel integration on a new branch
+> - Next: push Phase 4 branch, create PR, then start Phase 5 — seed content, sakura theme, accessibility, responsive polish on a new branch
 > - CLAUDE.md rules apply: no commits to main, thin controllers, mock-first, token-efficient responses
 
 ---
@@ -160,7 +175,7 @@ Use this verbatim to continue in a new Claude session:
 | **Phase 1** | Itinerary upload/paste, parsing, review, session save | ✅ Complete |
 | **Phase 2** | Deterministic recommendation engine with travel time scoring | ✅ Complete |
 | **Phase 3** | Gemini AI integration (parsing, explanations, chat) | ✅ Complete |
-| **Phase 4** | Rakuten hotel search, pagination, deep-link click-out | Not started |
+| **Phase 4** | Rakuten hotel search, pagination, deep-link click-out | ✅ Complete |
 | **Phase 5** | Seed content, sakura theme, accessibility, responsive polish | Not started |
 | **Phase 6** | Production deployment (Vercel + Railway + Supabase) | Not started |
 
