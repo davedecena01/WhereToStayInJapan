@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.wheretostayinjapan.com'
+  // TODO: update after first Railway deploy confirms the URL
+  apiUrl: 'https://YOUR-APP.up.railway.app'
 };

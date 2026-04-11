@@ -75,15 +75,21 @@ try
         return new CachedHotelProvider(inner, sp.GetRequiredService<ICacheService>());
     });
 
-    // Maps providers — mock for Phase 0
+    // Maps providers — config-driven (nominatim/osrm in prod, mock/seeded in dev)
+    var geocodeProvider = builder.Configuration["Maps:GeocodeProvider"] ?? "mock";
     builder.Services.AddScoped<IGeocodeProvider>(sp =>
         new CachedGeocodeProvider(
-            new MockGeocodeAdapter(),
+            geocodeProvider == "nominatim"
+                ? new NominatimAdapter(sp.GetRequiredService<IHttpClientFactory>().CreateClient("nominatim"))
+                : new MockGeocodeAdapter(),
             sp.GetRequiredService<ICacheService>()));
 
+    var routingProvider = builder.Configuration["Maps:RoutingProvider"] ?? "seeded";
     builder.Services.AddScoped<IRoutingProvider>(sp =>
         new CachedRoutingProvider(
-            new SeededFallbackRoutingProvider(sp.GetRequiredService<ICacheService>()),
+            routingProvider == "osrm"
+                ? new OsrmAdapter(sp.GetRequiredService<IHttpClientFactory>().CreateClient("osrm"))
+                : new SeededFallbackRoutingProvider(sp.GetRequiredService<ICacheService>()),
             sp.GetRequiredService<ICacheService>()));
 
     // Domain services
@@ -135,6 +141,13 @@ try
         p.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
 
     var app = builder.Build();
+
+    // Auto-run EF Core migrations at startup (safe for single-instance Railway deploy)
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await db.Database.MigrateAsync();
+    }
 
     app.UseMiddleware<GlobalExceptionMiddleware>();
 
