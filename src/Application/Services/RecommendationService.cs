@@ -34,9 +34,10 @@ public class RecommendationService(
         var domainPrefs = MapPreferences(preferences);
         var scored = scoringService.ScoreCandidates(candidates, travelMatrix, domainPrefs);
 
-        var enrichTasks = scored.Select((sc, i) =>
-            EnrichAsync(sc, i + 1, itinerary.Destinations, preferences, ct));
-        var recommendations = await Task.WhenAll(enrichTasks);
+        // Sequential: repositories share one scoped DbContext and cannot run in parallel
+        var recommendations = new List<StayAreaRecommendationDto>();
+        for (var i = 0; i < scored.Count; i++)
+            recommendations.Add(await EnrichAsync(scored[i], i + 1, itinerary.Destinations, preferences, ct));
 
         var warning = itinerary.IsMultiRegion
             ? "Your itinerary spans multiple regions. Consider separate stay bases for each region."
@@ -93,12 +94,14 @@ public class RecommendationService(
         var area = sc.Area;
         var destNames = destinations.Select(d => d.Name).ToList();
 
+        // DB reads must be sequential — repositories share a single scoped DbContext
+        var food = await foodRepo.GetCuratedFoodAsync(area.Id, 5, ct);
+        var attractions = await attractionRepo.GetCuratedAttractionsAsync(area.Id, 5, ct);
+
+        // Non-DB tasks (mocked/cached providers with their own error handling) run in parallel
         var hotelTask = FetchHotelsAsync(area, preferences, ct);
         var explanationTask = aiProvider.GenerateExplanationAsync(area.AreaName, area.City, destNames, ct);
-        var foodTask = foodRepo.GetCuratedFoodAsync(area.Id, 5, ct);
-        var attractionTask = attractionRepo.GetCuratedAttractionsAsync(area.Id, 5, ct);
-
-        await Task.WhenAll(hotelTask, explanationTask, foodTask, attractionTask);
+        await Task.WhenAll(hotelTask, explanationTask);
 
         var hotels = hotelTask.Result;
 
@@ -123,8 +126,8 @@ public class RecommendationService(
             Explanation: explanationTask.Result,
             Pros: GeneratePros(sc),
             Cons: GenerateCons(sc),
-            FeaturedFood: foodTask.Result.Select(MapFood).ToList(),
-            FeaturedAttractions: attractionTask.Result.Select(MapAttraction).ToList(),
+            FeaturedFood: food.Select(MapFood).ToList(),
+            FeaturedAttractions: attractions.Select(MapAttraction).ToList(),
             HotelPreview: hotels,
             HotelsAvailable: hotels.Count > 0);
     }

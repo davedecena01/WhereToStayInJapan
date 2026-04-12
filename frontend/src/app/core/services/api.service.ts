@@ -25,9 +25,9 @@ export class ApiService {
 
   sendChatMessage(sessionId: string, message: string, currentItinerary: ChatItinerary | null): Observable<ChatResponse> {
     return this.http.post<ChatResponse>(`${this.base}/api/chat`, {
-      sessionId,
+      session_id: sessionId,
       message,
-      currentItinerary
+      current_itinerary: currentItinerary
     });
   }
 

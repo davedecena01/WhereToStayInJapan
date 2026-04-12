@@ -10,8 +10,8 @@ public class HotelController(IHotelSearchService hotelSearchService) : Controlle
 {
     [HttpGet]
     public async Task<ActionResult<HotelSearchResultDto>> SearchAsync(
-        [FromQuery] Guid areaId,
-        [FromQuery] string budgetTier = "mid",
+        [FromQuery(Name = "area_id")] Guid areaId,
+        [FromQuery(Name = "budget_tier")] string budgetTier = "mid",
         [FromQuery] int travelers = 1,
         [FromQuery] string? checkIn = null,
         [FromQuery] string? checkOut = null,

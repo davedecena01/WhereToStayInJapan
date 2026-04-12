@@ -7,5 +7,5 @@ public record UserPreferencesDto(
     string BudgetTier,
     List<string> PreferredAtmosphere,
     bool AvoidLongWalking,
-    bool MustBeNearStation
+    bool? MustBeNearStation
 );

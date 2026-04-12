@@ -132,7 +132,10 @@ try
     // Controllers + CORS
     builder.Services.AddControllers()
         .AddJsonOptions(opts =>
-            opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower);
+        {
+            opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        });
     builder.Services.AddOpenApi();
 
     var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
@@ -142,9 +145,11 @@ try
 
     var app = builder.Build();
 
-    // Auto-run EF Core migrations at startup (safe for single-instance Railway deploy)
-    using (var scope = app.Services.CreateScope())
+    // Auto-run EF Core migrations at startup — Production only (Railway direct connection)
+    // Skipped in Development: local Supabase pooler connection triggers Npgsql 10 write bug
+    if (app.Environment.IsProduction())
     {
+        using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         await db.Database.MigrateAsync();
     }

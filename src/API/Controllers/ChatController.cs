@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Services.Interfaces;
 
@@ -19,4 +20,4 @@ public class ChatController(IChatService chatService) : ControllerBase
     }
 }
 
-public record ChatRequest(string SessionId, string Message, ParsedItineraryDto? CurrentItinerary);
+public record ChatRequest(string? SessionId, string Message, [ValidateNever] ParsedItineraryDto? CurrentItinerary);
