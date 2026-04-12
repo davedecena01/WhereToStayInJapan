@@ -1,8 +1,8 @@
 # Session Resume — Where To Stay In Japan
 
-**Last updated:** 2026-04-12 (mid-Phase 6)
+**Last updated:** 2026-04-12 (Phase 6 complete — all bugs fixed, tested, committed)
 **Current branch:** `feature/phase-6-deployment`
-**Project phase:** Phase 6 in progress — deployment config partially complete
+**Project phase:** Phase 6 — PR #5 open, pending manual Railway + Vercel deployment
 
 ---
 
@@ -14,194 +14,103 @@ This file is a handover document. Read it at the start of a new session to under
 
 ## Current State
 
-### Phase 0 — Complete ✅
+### Phases 0–5 — All Complete ✅
 
-- Full .NET 10 solution with all layers (API, Application, Domain, Infrastructure, Shared)
-- All domain entities + EF Core `InitialCreate` migration applied to Supabase
-- 15 station areas, 41 food items, 51 attractions seeded via JSON files in `src/Infrastructure/Seed/`
-- Mock adapters for AI, Hotels, Maps all wired and working
-- `GET /api/health` returns `{ "status": "healthy", "db": "connected" }` ✅
-- CI pipeline (dotnet test + ng build) in `.github/workflows/ci.yml`
+- Phase 0: .NET 10 skeleton, EF Core migrations applied to Supabase, 15 station areas + 41 food + 51 attractions seeded, mock adapters all wired
+- Phase 1: Itinerary parse/review flow (text + file upload)
+- Phase 2: Deterministic recommendation engine, scoring, `POST /api/recommendations`
+- Phase 3: Gemini AI adapter, ChatService, `ItineraryChatComponent` in review page
+- Phase 4: Rakuten hotel adapter, `HotelSearchService`, `/hotels/:areaId` page with pagination
+- Phase 5: Responsive polish, ARIA labels, keyboard navigation, `ng build` + `dotnet test` (32 passed) green
 
-### Phase 1 — Complete ✅
+### Phase 6 — PR Open, Awaiting Deployment ✅
 
-- `IItineraryExtractor` + PlainText/PDF/Docx extractors
-- `ItineraryParsingService` + `ItineraryNormalizer` (dedup, region lookup, multi-region detection)
-- `POST /api/itinerary/parse` endpoint working
-- Angular: itinerary input form, review page, session service, itinerary store
+**Branch:** `feature/phase-6-deployment` (pushed, PR #5 open → `feature/phase-5-polish`)
 
-### Phase 2 — Complete ✅
+**All committed changes:**
 
-**Branch:** `feature/phase-2-recommendation-engine` (pushed, PR #1 open → `feature/phase-0-bootstrap`)
+| Commit | What |
+|---|---|
+| `33f8c24` | Backend runtime bugs from Phase 6 Playwright testing |
+| `27a67e6` | P1/P2 UX fixes — session, chat, date validation |
 
-- `IScoringService` / `ScoringService` — pure min-max scoring
-- `RecommendationService` — fetches candidates, builds TravelTimeMatrix, scores, enriches top 5
-- Weights: travel 0.4, cost 0.3, station 0.15, food 0.1, shop 0.05
-- `POST /api/recommendations` controller wired
-- Angular: `RecommendationStore`, `ResultsComponent` with score bars, pros/cons, hotel preview, food tags
-
-### Phase 3 — Complete ✅
-
-**Branch:** `feature/phase-3-gemini-ai` (pushed, PR #2 open → `feature/phase-2-recommendation-engine`)
-
-- `GeminiAdapter` — `ParseItineraryAsync`, `GenerateExplanationAsync`, `SuggestFoodAsync`, `SuggestAttractionsAsync`
-- Polly v8 retry pipeline for HTTP 429 (exponential backoff, 3 retries)
-- `ChatService.SendMessageAsync()` with heuristic new-itinerary vs chat detection
-- Angular: `ItineraryChatComponent` embedded in review page
-
-### Phase 4 — Complete ✅
-
-**Branch:** `feature/phase-4-rakuten-hotels` (pushed, PR #3 open → `feature/phase-3-gemini-ai`)
-
-- `RakutenHotelAdapter` — price range mapping, Rakuten API deserialization, deep-link building
-- `HotelSearchService` — non-throwing, returns empty on provider failure
-- Global snake_case JSON policy in `Program.cs` (`JsonNamingPolicy.SnakeCaseLower`)
-- Angular: `HotelCardComponent`, `HotelListComponent` at `/hotels/:areaId`, pagination
-
-### Phase 5 — Complete ✅
-
-**Branch:** `feature/phase-5-polish` (pushed, PR #4 open → `feature/phase-4-rakuten-hotels`)
-
-- Global CSS vars (`--primary`, `--text-primary`, `--text-muted`, `--border`, `--surface`) in `styles.scss`
-- Skip-to-main-content link + `<main id="main-content">` in `app.html`
-- Drop zone: `role="button"`, `tabindex="0"`, `aria-label`, Enter/Space activation
-- Hotel card Book button: `aria-label` with hotel name
-- Pagination: `<nav aria-label>`, Prev/Next `aria-label`, `aria-live` on page count
-- Mobile responsive breakpoints (≤600px) on all components
-- `dotnet test`: 32 passed | `ng build`: passing
-
-### Phase 6 — In Progress 🔄
-
-**Branch:** `feature/phase-6-deployment` (local only, not yet pushed)
-
-**Completed so far (NOT YET COMMITTED):**
-- `Dockerfile` created at repo root — .NET 10 multi-stage build for Railway
-- `frontend/vercel.json` created — SPA rewrite rule + build command
-
-**Still TODO (pick up here next session):**
-
-| Task | File | Notes |
-|---|---|---|
-| Add `fileReplacements` to prod build | `frontend/angular.json` | Wire `environment.prod.ts` into production config |
-| Update prod API URL | `frontend/src/environments/environment.prod.ts` | Replace placeholder with `https://{your-railway-app}.up.railway.app` |
-| Add `MigrateAsync()` at startup | `src/API/Program.cs` | Run EF Core migrations on startup before app starts serving |
-| Wire Nominatim + OSRM via config | `src/API/Program.cs` | Add `nominatim`/`osrm` cases to geocode/routing provider selection |
-| Update CI for prod build | `.github/workflows/ci.yml` | Change frontend build step to use `--configuration production` |
-| Commit + push Phase 6 branch | git | Then create PR #5 → `feature/phase-5-polish` |
+**Deployment config (committed earlier):**
+- `Dockerfile` at repo root — .NET 10 multi-stage build for Railway
+- `frontend/vercel.json` — SPA rewrite rule + build command
+- `src/API/Program.cs` — `MigrateAsync()` at startup (Production only), Nominatim/OSRM wired via config
+- `.github/workflows/ci.yml` — updated to `--configuration production`
 
 ---
 
-## Known Issues
+## What Was Completed This Session
 
-### Npgsql 10.0.1 + Supabase Supavisor write bug ⚠️
-- `SaveChangesAsync` throws `ObjectDisposedException: ManualResetEventSlim` on any write
-- All write operations affected (recommendation logs, hotel click logs, etc.)
-- Workaround in place: `AnalyticsController` uses fire-and-forget try/catch
-- **Resolution for Phase 6:** Use direct connection (port 5432) instead of Supavisor (port 6543) in production — the bug is specific to PgBouncer/transaction mode
+### E2E Playwright Testing
 
-### `git` command fails in Claude Code bash hook ⚠️
-- Running `git` in bash results in `_lc: command not found`
-- Workaround: use full path `"C:/Program Files/Git/cmd/git.exe" -C <repo> <command>`
+All flows tested and passing:
+
+| Flow | Status |
+|---|---|
+| Home page → parse → review → results | ✅ |
+| Hotel list page + "Book on Rakuten" links | ✅ |
+| File upload (.txt) → review page | ✅ |
+| Mobile responsive layout (375×812) | ✅ |
+| Keyboard navigation (tab order, skip link, Enter/Space on dropzone) | ✅ |
+| ARIA attributes (role=alert, status, log, progressbar) | ✅ |
+
+### Bugs Fixed and Committed
+
+1. **HotelController `[FromQuery(Name)]`** — `area_id` query param was not binding to `Guid areaId` parameter (underscore vs camelCase). Fixed with explicit `[FromQuery(Name = "area_id")]`. This caused all hotel list pages to show "No hotels found."
+2. **ChatController `[ValidateNever]`** — camelCase CurrentItinerary DTO was failing snake_case model binding validation
+3. **UserPreferencesDto `bool? MustBeNearStation`** — Angular sends null for optional bool; was crashing deserialization
+4. **RecommendationService sequential `EnrichAsync`** — `Task.WhenAll` on shared scoped `DbContext` caused concurrent-operation exception
+5. **PostgresCacheService try/catch** — all DB operations now wrapped for graceful degradation
+6. **Program.cs** — `MigrateAsync()` restricted to Production only; `PropertyNameCaseInsensitive = true` added to JSON options
+
+### UX Fixes Applied and Committed
+
+1. **`sessionId` class field** — was re-created as local variable on every chat send
+2. **Dismiss banner** — now hides via local signal, does NOT clear session data
+3. **`firstValueFrom`** — submit handler converted from `.subscribe()` to async/await
+4. **Date validation** — checkout must be after checkin, inline error with `role="alert"`
+5. **`$any()` removed** — replaced with typed `onInput(event: Event)` handler
+6. **Unused param removed** — `onItineraryAccepted(updated: ParsedItinerary)` → no param
 
 ---
 
-## Pending Tasks (in order)
+## Pending Tasks (pick up here)
 
-### 1. Finish Phase 6 deployment config (pick up mid-task)
-
-**Step 1 — `frontend/angular.json`:** Add `fileReplacements` to the `production` configuration block so `environment.prod.ts` is swapped in at build time:
-
-```json
-"production": {
-  "fileReplacements": [
-    {
-      "replace": "src/environments/environment.ts",
-      "with": "src/environments/environment.prod.ts"
-    }
-  ],
-  "budgets": [ ... ],
-  "outputHashing": "all"
-}
-```
-
-**Step 2 — `frontend/src/environments/environment.prod.ts`:** Update the placeholder URL:
-```typescript
-export const environment = {
-  production: true,
-  apiUrl: 'https://YOUR-APP.up.railway.app'  // fill in after Railway deploy
-};
-```
-(Commit with a `TODO` comment — update after first Railway deploy confirms the URL.)
-
-**Step 3 — `src/API/Program.cs`:** Add auto-migration at startup (after `var app = builder.Build();`):
-```csharp
-// Auto-run EF Core migrations at startup (safe for single-instance Railway deploy)
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await db.Database.MigrateAsync();
-}
-```
-
-**Step 4 — `src/API/Program.cs`:** Wire Nominatim and OSRM providers via config (currently hardcoded to mock):
-```csharp
-var geocodeProvider = builder.Configuration["Maps:GeocodeProvider"] ?? "mock";
-builder.Services.AddScoped<IGeocodeProvider>(sp =>
-    new CachedGeocodeProvider(
-        geocodeProvider == "nominatim"
-            ? new NominatimAdapter(sp.GetRequiredService<IHttpClientFactory>().CreateClient("nominatim"))
-            : new MockGeocodeAdapter(),
-        sp.GetRequiredService<ICacheService>()));
-
-var routingProvider = builder.Configuration["Maps:RoutingProvider"] ?? "seeded";
-builder.Services.AddScoped<IRoutingProvider>(sp =>
-    new CachedRoutingProvider(
-        routingProvider == "osrm"
-            ? new OsrmAdapter(sp.GetRequiredService<IHttpClientFactory>().CreateClient("osrm"))
-            : new SeededFallbackRoutingProvider(sp.GetRequiredService<ICacheService>()),
-        sp.GetRequiredService<ICacheService>()));
-```
-
-**Step 5 — `.github/workflows/ci.yml`:** Change frontend build step:
-```yaml
-- name: Build
-  working-directory: frontend
-  run: npm run build -- --configuration production
-```
-
-**Step 6 — Commit, push, create PR #5 → `feature/phase-5-polish`.**
-
-### 2. Manual deployment steps (outside of code changes)
-
-These are done in browser/dashboard — not automatable by Claude:
+### Step 1 — Manual deployment (outside code)
 
 **Railway (backend):**
-1. Go to railway.app → New Project → Deploy from GitHub Repo
-2. Select `davedecena01/WhereToStayInJapan`, root directory = repo root (uses `Dockerfile`)
-3. Add environment variables (see list below)
-4. Note the Railway URL (e.g. `https://abc123.up.railway.app`) → update `environment.prod.ts`
+1. railway.app → New Project → Deploy from GitHub Repo → `davedecena01/WhereToStayInJapan`, root = repo root
+2. Add environment variables (see list below)
+3. Note the Railway URL → update `frontend/src/environments/environment.prod.ts`
 
 **Vercel (frontend):**
-1. Go to vercel.com → Add New Project → import `davedecena01/WhereToStayInJapan`
-2. Root Directory: `frontend`
-3. Build settings are auto-read from `frontend/vercel.json`
-4. After deploy, note the Vercel URL → add it to Railway `CORS__ALLOWEDORIGINS__0`
+1. vercel.com → New Project → import `davedecena01/WhereToStayInJapan`, Root Directory: `frontend`
+2. After deploy, add Vercel URL to Railway `CORS__ALLOWEDORIGINS__0`
+3. Commit and push `environment.prod.ts` update
 
-**Supabase inactivity workaround:**
-- Go to cron-job.org → create free cron job
-- URL: `https://{railway-url}/api/health`, interval: every 6 days
-- This prevents Supabase free tier from pausing the database
+**Supabase keep-alive:**
+- cron-job.org → `https://{railway-url}/api/health` every 6 days
 
-### 3. Railway environment variables to set
+### Step 2 — Merge PR chain
+
+Once deployed and verified:
+1. Merge PR #5 → `feature/phase-5-polish`
+2. Merge PR #4 → ... → `main`
+
+---
+
+## Railway Environment Variables
 
 ```
 CONNECTIONSTRINGS__DEFAULTCONNECTION=Host=db.{ref}.supabase.co;Port=5432;Database=postgres;Username=postgres;Password={pw};SSL Mode=Require;Trust Server Certificate=true
 AI__MODE=production
-AI__PROVIDER=gemini
-AI__APIKEY=your-gemini-api-key
 AI__GEMINIMODEL=gemini-1.5-flash
+AI__GEMINIAPIKEY=your-gemini-api-key
 HOTELS__PROVIDER=rakuten
-HOTELS__APIKEY=your-rakuten-app-id
+HOTELS__APPLICATIONID=your-rakuten-app-id
 HOTELS__SEARCHRADIUSKM=2
 HOTELS__MINREVIEWRATING=3.5
 MAPS__GEOCODEPROVIDER=nominatim
@@ -211,7 +120,20 @@ CORS__ALLOWEDORIGINS__0=https://your-vercel-app.vercel.app
 ASPNETCORE_ENVIRONMENT=Production
 ```
 
-**Note on connection string:** Use port 5432 (direct), NOT 6543 (Supavisor/PgBouncer). The Npgsql 10.0.1 + PgBouncer write bug requires the direct connection to avoid `ObjectDisposedException` on writes.
+**Important:** Use port 5432 (direct connection), NOT the Supavisor pooler, in production.
+
+---
+
+## Known Issues
+
+### Npgsql 10 + Supabase Supavisor (dev only) ⚠️
+- In development, the app connects through the Supavisor pooler
+- Workaround: `No Reset On Close=true` in `appsettings.Development.json` (gitignored, apply locally)
+- Production uses direct DB connection — not affected
+
+### `git` command fails in Claude Code bash ⚠️
+- `git` in bash gives `_lc: command not found`
+- Workaround: `"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" <command>`
 
 ---
 
@@ -221,16 +143,13 @@ Use this verbatim to continue in a new Claude session:
 
 ---
 
-> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Phase 6 (deployment) is in progress. Please read `docs/session-resume.md` first to understand exactly where we left off, then continue from the top of the **Pending Tasks** list.
+> I'm building a portfolio Angular + .NET 10 app called "Where To Stay In Japan". Please read `docs/session-resume.md` first to understand exactly where the project stands, then continue from the **Pending Tasks** list.
 >
 > Key context:
-> - Branch: `feature/phase-6-deployment` (local only, not yet pushed — has Dockerfile + vercel.json uncommitted)
-> - Phases 0–5 are complete and pushed. All PRs are chained: #1→#2→#3→#4 (no main branch on remote yet)
-> - `dotnet test`: 32 passed | `ng build`: passing
-> - `git` bash fails with `_lc: command not found` — use full path workaround: `"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" <command>`
-> - Next: finish Phase 6 code changes (angular.json fileReplacements, Program.cs MigrateAsync + maps config, CI prod build), commit, push, create PR #5
-> - After code changes: manual Railway + Vercel deployment (see Pending Tasks section 2 + 3)
-> - CLAUDE.md rules apply: no commits to main, thin controllers, mock-first, token-efficient responses
+> - Branch: `feature/phase-6-deployment` (pushed, PR #5 open)
+> - Phases 0–6 code is complete. All bugs fixed, all E2E tests passing. Only manual deployment steps remain (Railway + Vercel).
+> - `git` in bash gives `_lc: command not found` — use full path: `"C:/Program Files/Git/cmd/git.exe" -C "c:/Users/My PC/source/repos/WhereToStayInJapan" <command>`
+> - CLAUDE.md rules apply: no commits to main, token-efficient responses, spec-driven
 
 ---
 
@@ -244,7 +163,7 @@ Use this verbatim to continue in a new Claude session:
 | **Phase 3** | Gemini AI integration (parsing, explanations, chat) | ✅ Complete |
 | **Phase 4** | Rakuten hotel search, pagination, deep-link click-out | ✅ Complete |
 | **Phase 5** | Responsive polish, ARIA labels, keyboard navigation | ✅ Complete |
-| **Phase 6** | Production deployment (Vercel + Railway + Supabase) | 🔄 In progress |
+| **Phase 6** | Production deployment (Vercel + Railway + Supabase) | 🔄 PR open — deploy manually |
 
 ---
 
@@ -252,7 +171,7 @@ Use this verbatim to continue in a new Claude session:
 
 - **Stack:** Angular (standalone, signals) + .NET 10 Web API + PostgreSQL (Supabase)
 - **AI:** `MockAIAdapter` in dev (`AI:Mode = "mock"`), `GeminiAdapter` in production
-- **Scoring:** Deterministic scoring engine only — AI is for explanations, never ranking
+- **Scoring:** Deterministic only — AI is for explanations, never ranking
 - **Providers:** All external integrations behind interfaces in `Application/Interfaces/`
 - **No auth in MVP:** Guest-only, localStorage session
 - **No in-app booking:** Rakuten deep-link only
@@ -264,10 +183,10 @@ Use this verbatim to continue in a new Claude session:
 | File | Purpose |
 |---|---|
 | `src/API/Program.cs` | All DI registrations — provider selection by config key |
-| `src/Application/Interfaces/` | All provider + repository interfaces |
-| `src/Application/Services/RecommendationService.cs` | Recommendation orchestration |
+| `src/Application/Services/RecommendationService.cs` | Recommendation orchestration (sequential DB ops) |
 | `src/Domain/Services/ScoringService.cs` | Pure scoring logic (weights, min-max normalization) |
 | `src/Infrastructure/Seed/*.json` | Station areas, food, attractions seed data |
+| `src/Infrastructure/Cache/PostgresCacheService.cs` | Cache service — all DB ops wrapped in try/catch |
 | `src/Infrastructure/Adapters/AI/GeminiAdapter.cs` | Gemini AI adapter |
 | `src/Infrastructure/Adapters/Hotels/RakutenHotelAdapter.cs` | Rakuten hotel adapter |
 | `frontend/src/environments/environment.prod.ts` | Production API URL (update after Railway deploy) |
