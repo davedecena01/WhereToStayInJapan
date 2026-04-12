@@ -6,7 +6,7 @@ import { ItineraryStore } from '../../../core/stores/itinerary.store';
 import { SessionService } from '../../../core/services/session.service';
 import { RecommendationStore } from '../../../core/stores/recommendation.store';
 import { ItineraryChatComponent } from '../itinerary-chat/itinerary-chat.component';
-import { ChatItinerary, ParsedItinerary } from '../../../core/models/itinerary.models';
+import { ChatItinerary } from '../../../core/models/itinerary.models';
 
 @Component({
   selector: 'app-itinerary-review',
@@ -61,7 +61,7 @@ export class ItineraryReviewComponent {
     this.router.navigate(['/results']);
   }
 
-  onItineraryAccepted(updated: ParsedItinerary): void {
+  onItineraryAccepted(): void {
     // Store already updated in the chat component — just scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

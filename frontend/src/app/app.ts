@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SessionService } from './core/services/session.service';
@@ -17,10 +17,11 @@ export class App {
   readonly session = inject(SessionService);
   readonly store = inject(ItineraryStore);
 
-  readonly showResumeBanner = this.session.hasActiveSession;
+  private readonly bannerDismissed = signal(false);
+  readonly showResumeBanner = computed(() => this.session.hasActiveSession() && !this.bannerDismissed());
 
   dismissResumeBanner(): void {
-    this.session.clear();
+    this.bannerDismissed.set(true);
   }
 
   resumeSession(): void {

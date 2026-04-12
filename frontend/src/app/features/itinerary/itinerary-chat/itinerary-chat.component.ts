@@ -43,6 +43,7 @@ export class ItineraryChatComponent implements AfterViewChecked {
   readonly error = signal<string | null>(null);
 
   private shouldScrollToBottom = false;
+  private sessionId: string | null = null;
 
   ngAfterViewChecked(): void {
     if (this.shouldScrollToBottom) {
@@ -65,8 +66,8 @@ export class ItineraryChatComponent implements AfterViewChecked {
     this.error.set(null);
     this.shouldScrollToBottom = true;
 
-    const sessionId = `chat-${Date.now()}`;
-    this.api.sendChatMessage(sessionId, text, this.currentItinerary()).subscribe({
+    if (!this.sessionId) this.sessionId = `chat-${Date.now()}`;
+    this.api.sendChatMessage(this.sessionId, text, this.currentItinerary()).subscribe({
       next: response => {
         this.messages.update(msgs => [...msgs, {
           role: 'assistant',
@@ -95,6 +96,10 @@ export class ItineraryChatComponent implements AfterViewChecked {
       text: 'Great — your itinerary has been updated. Review the changes above.',
       timestamp: new Date()
     }]);
+  }
+
+  onInput(event: Event): void {
+    this.inputText.set((event.target as HTMLInputElement).value);
   }
 
   onKeydown(event: KeyboardEvent): void {

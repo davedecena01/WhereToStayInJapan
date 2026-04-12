@@ -11,11 +11,14 @@
     <div class="form-row">
       <div class="form-group">
         <label for="checkin">Check-in</label>
-        <input id="checkin" type="date" [(ngModel)]="preferences.checkin" />
+        <input id="checkin" type="date" [(ngModel)]="preferences.checkin" (change)="validateDates()" />
       </div>
       <div class="form-group">
         <label for="checkout">Check-out</label>
-        <input id="checkout" type="date" [(ngModel)]="preferences.checkout" />
+        <input id="checkout" type="date" [(ngModel)]="preferences.checkout" (change)="validateDates()" />
+        @if (dateError()) {
+          <span class="field-error" role="alert">{{ dateError() }}</span>
+        }
       </div>
       <div class="form-group form-group--small">
         <label for="travelers">Travelers</label>

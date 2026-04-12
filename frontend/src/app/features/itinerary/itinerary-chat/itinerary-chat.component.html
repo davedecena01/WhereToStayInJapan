@@ -37,7 +37,7 @@
     <textarea
       class="chat-input"
       [value]="inputText()"
-      (input)="inputText.set($any($event.target).value)"
+      (input)="onInput($event)"
       (keydown)="onKeydown($event)"
       placeholder="Ask a question or paste itinerary text…"
       rows="2"

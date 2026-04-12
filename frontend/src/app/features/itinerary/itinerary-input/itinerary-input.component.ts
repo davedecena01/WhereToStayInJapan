@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ItineraryStore } from '../../../core/stores/itinerary.store';
 import {
@@ -55,9 +56,20 @@ export class ItineraryInputComponent {
     { value: 'family_friendly', label: 'Family-Friendly' }
   ];
 
+  readonly dateError = signal<string | null>(null);
+
   get canSubmit(): boolean {
     const hasInput = this.rawText.trim().length > 0 || this.selectedFile() !== null;
-    return hasInput && !this.loading();
+    return hasInput && !this.loading() && !this.dateError();
+  }
+
+  validateDates(): void {
+    const { checkin, checkout } = this.preferences;
+    if (checkin && checkout && checkout <= checkin) {
+      this.dateError.set('Check-out date must be after check-in date.');
+    } else {
+      this.dateError.set(null);
+    }
   }
 
   onDragOver(event: DragEvent): void {
@@ -93,6 +105,7 @@ export class ItineraryInputComponent {
   }
 
   async submit(): Promise<void> {
+    this.validateDates();
     if (!this.canSubmit) return;
 
     this.store.setError(null);
@@ -102,18 +115,17 @@ export class ItineraryInputComponent {
     const file = this.selectedFile();
     const obs = file ? this.api.parseFile(file) : this.api.parseText(this.rawText);
 
-    obs.subscribe({
-      next: itinerary => {
-        this.store.setItinerary(itinerary);
-        this.store.setLoading(false);
-        this.router.navigate(['/review']);
-      },
-      error: err => {
-        const detail = err?.error?.detail ?? 'Something went wrong. Please try again.';
-        this.store.setError(detail);
-        this.store.setLoading(false);
-      }
-    });
+    try {
+      const itinerary = await firstValueFrom(obs);
+      this.store.setItinerary(itinerary);
+      this.store.setLoading(false);
+      this.router.navigate(['/review']);
+    } catch (err: unknown) {
+      const detail = (err as { error?: { detail?: string } })?.error?.detail
+        ?? 'Something went wrong. Please try again.';
+      this.store.setError(detail);
+      this.store.setLoading(false);
+    }
   }
 
   private setFile(file: File): void {
