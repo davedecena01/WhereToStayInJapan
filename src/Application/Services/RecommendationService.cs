@@ -100,7 +100,7 @@ public class RecommendationService(
 
         // Non-DB tasks (mocked/cached providers with their own error handling) run in parallel
         var hotelTask = FetchHotelsAsync(area, preferences, ct);
-        var explanationTask = aiProvider.GenerateExplanationAsync(area.AreaName, area.City, destNames, ct);
+        var explanationTask = FetchExplanationAsync(area.AreaName, area.City, destNames, ct);
         await Task.WhenAll(hotelTask, explanationTask);
 
         var hotels = hotelTask.Result;
@@ -130,6 +130,19 @@ public class RecommendationService(
             FeaturedAttractions: attractions.Select(MapAttraction).ToList(),
             HotelPreview: hotels,
             HotelsAvailable: hotels.Count > 0);
+    }
+
+    private async Task<string> FetchExplanationAsync(
+        string areaName, string city, List<string> destinations, CancellationToken ct)
+    {
+        try
+        {
+            return await aiProvider.GenerateExplanationAsync(areaName, city, destinations, ct);
+        }
+        catch
+        {
+            return $"{areaName} is a well-connected area in {city} with easy access to major transit hubs and a range of accommodation options.";
+        }
     }
 
     private async Task<List<HotelItemDto>> FetchHotelsAsync(

@@ -21,7 +21,9 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
         .AddRetry(new RetryStrategyOptions
         {
             ShouldHandle = new PredicateBuilder()
-                .Handle<HttpRequestException>(ex => ex.StatusCode == HttpStatusCode.TooManyRequests),
+                .Handle<HttpRequestException>(ex =>
+                    ex.StatusCode == HttpStatusCode.TooManyRequests ||
+                    ex.StatusCode == HttpStatusCode.ServiceUnavailable),
             MaxRetryAttempts = 3,
             BackoffType = DelayBackoffType.Exponential,
             Delay = TimeSpan.FromSeconds(2)
@@ -112,7 +114,7 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
             {
                 new { parts = new[] { new { text = promptText } } }
             },
-            generationConfig = new { temperature = 0.2, maxOutputTokens = 1024 }
+            generationConfig = new { temperature = 0.2, maxOutputTokens = 1024, thinkingConfig = new { thinkingBudget = 0 } }
         };
 
         return await _pipeline.ExecuteAsync(async token =>
