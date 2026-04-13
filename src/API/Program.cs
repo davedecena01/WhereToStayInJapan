@@ -120,7 +120,12 @@ try
     builder.Services.AddHttpClient("gemini", c =>
         c.BaseAddress = new Uri("https://generativelanguage.googleapis.com/"));
     builder.Services.AddHttpClient("rakuten", c =>
-        c.BaseAddress = new Uri("https://app.rakuten.co.jp/"));
+    {
+        c.BaseAddress = new Uri("https://app.rakuten.co.jp/");
+        // Rakuten Travel API enforces "Allowed websites" via Referer header check.
+        // The registered domain for this application ID is davedecena01.github.io.
+        c.DefaultRequestHeaders.Referrer = new Uri("https://davedecena01.github.io");
+    });
     builder.Services.AddHttpClient("nominatim", c =>
     {
         c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
