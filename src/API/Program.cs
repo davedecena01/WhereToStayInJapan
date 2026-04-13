@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhereToStayInJapan.API.Middleware;
