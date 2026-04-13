@@ -31,6 +31,13 @@ skills-lock.json
 
 # Logs
 src/API/logs/
+*.log
+
+# Test artifacts
+screenshots/
+*.png
+.playwright-mcp/
+pw-test*.js
 
 # OS
 .DS_Store

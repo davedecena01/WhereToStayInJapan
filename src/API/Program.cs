@@ -110,6 +110,7 @@ try
 
     // Validators
     builder.Services.AddValidatorsFromAssemblyContaining<ParseItineraryRequestValidator>();
+    builder.Services.AddFluentValidationAutoValidation();
 
     // Background services
     builder.Services.AddHostedService<DataSeeder>();
