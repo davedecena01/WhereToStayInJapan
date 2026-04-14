@@ -114,7 +114,7 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
             {
                 new { parts = new[] { new { text = promptText } } }
             },
-            generationConfig = new { temperature = 0.2, maxOutputTokens = 1024, thinkingConfig = new { thinkingBudget = 0 } }
+            generationConfig = new { temperature = 0.2, maxOutputTokens = 2048 }
         };
 
         return await _pipeline.ExecuteAsync(async token =>

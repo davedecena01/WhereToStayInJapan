@@ -1,49 +1,39 @@
 // TypeScript interfaces matching backend DTOs exactly (see docs/technical/api-contracts.md)
-
-export interface GeoPoint {
-  lat: number;
-  lng: number;
-}
-
-export interface DateRange {
-  start: string; // "YYYY-MM-DD"
-  end: string;
-}
+// Backend uses SnakeCaseLower serialization — all fields are snake_case on the wire.
 
 export interface Destination {
   name: string;
-  raw_name: string;
   city: string | null;
   region: string | null;
   day_number: number | null;
   activity_type: string | null;
-  geo_point: GeoPoint | null;
+  lat: number | null;
+  lng: number | null;
+  is_ambiguous: boolean;
 }
 
 export interface ParsedItinerary {
   destinations: Destination[];
-  travel_dates: DateRange | null;
-  raw_text_preview: string;
+  start_date: string | null;
+  end_date: string | null;
+  raw_text: string | null;
   parsing_confidence: 'high' | 'low';
   clarification_needed: boolean;
   is_multi_region: boolean;
   regions_detected: string[];
-  parsed_by: 'ai' | 'rules_only';
 }
 
 export type BudgetTier = 'budget' | 'mid' | 'luxury';
-export type HotelType = 'business' | 'ryokan' | 'capsule' | 'boutique' | 'resort' | 'hostel';
 export type AtmosphereType = 'nightlife' | 'family_friendly' | 'quiet' | 'shopping' | 'historic' | 'modern';
 
 export interface UserPreferences {
-  checkin: string;
-  checkout: string;
+  check_in: string;
+  check_out: string;
   travelers: number;
   budget_tier: BudgetTier;
-  hotel_types: HotelType[];
-  avoid_long_walking: boolean;
-  must_be_near_station: string | null;
   preferred_atmosphere: AtmosphereType[];
+  avoid_long_walking: boolean;
+  must_be_near_station: boolean | null;
 }
 
 // ── Recommendation models ──────────────────────────────────────────────────
@@ -130,27 +120,21 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   timestamp: Date;
-  updatedItinerary?: ChatItinerary;
+  updatedItinerary?: ParsedItinerary;
 }
 
-/** Matches the backend ChatResponseDto (camelCase on the wire) */
+/** Matches the backend ChatResponseDto (snake_case on the wire via SnakeCaseLower policy) */
 export interface ChatResponse {
   message: string;
-  updatedItinerary: ChatItinerary | null;
-  hasItineraryUpdate: boolean;
+  updated_itinerary: ParsedItinerary | null;
+  has_itinerary_update: boolean;
 }
 
-/** Matches ParsedItineraryDto serialized to camelCase */
-export interface ChatItinerary {
-  destinations: ChatDestination[];
-  regionsDetected: string[];
-  isMultiRegion: boolean;
-  startDate: string | null;
-  endDate: string | null;
-  parsingConfidence: string;
-  clarificationNeeded: boolean;
-  rawText: string | null;
-}
+/**
+ * Chat sends/receives the same ParsedItineraryDto shape as the parse endpoint.
+ * Type alias avoids conversion layers between chat and store.
+ */
+export type ChatItinerary = ParsedItinerary;
 
 // ── Hotel search models ────────────────────────────────────────────────────
 
@@ -167,15 +151,4 @@ export interface HotelClickRequest {
   session_id: string;
   hotel_id: string;
   area_id: string;
-}
-
-export interface ChatDestination {
-  name: string;
-  city: string | null;
-  region: string | null;
-  dayNumber: number | null;
-  activityType: string | null;
-  lat: number | null;
-  lng: number | null;
-  isAmbiguous: boolean;
 }
