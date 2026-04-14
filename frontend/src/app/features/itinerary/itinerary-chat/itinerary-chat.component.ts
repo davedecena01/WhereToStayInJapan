@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { ItineraryStore } from '../../../core/stores/itinerary.store';
-import { ChatItinerary, ChatMessage, ParsedItinerary } from '../../../core/models/itinerary.models';
+import { ChatItinerary, ChatMessage } from '../../../core/models/itinerary.models';
 
 @Component({
   selector: 'app-itinerary-chat',
@@ -26,11 +26,10 @@ export class ItineraryChatComponent implements AfterViewChecked {
   private readonly api = inject(ApiService);
   private readonly store = inject(ItineraryStore);
 
-  /** The current itinerary in camelCase format (from parent) */
   readonly currentItinerary = input<ChatItinerary | null>(null);
 
   /** Emitted when the user accepts an AI-suggested itinerary update */
-  readonly itineraryAccepted = output<ParsedItinerary>();
+  readonly itineraryAccepted = output<ChatItinerary>();
 
   readonly messages = signal<ChatMessage[]>([{
     role: 'assistant',
@@ -73,8 +72,8 @@ export class ItineraryChatComponent implements AfterViewChecked {
           role: 'assistant',
           text: response.message,
           timestamp: new Date(),
-          updatedItinerary: response.hasItineraryUpdate && response.updatedItinerary
-            ? response.updatedItinerary
+          updatedItinerary: response.has_itinerary_update && response.updated_itinerary
+            ? response.updated_itinerary
             : undefined
         }]);
         this.isSending.set(false);
@@ -87,10 +86,9 @@ export class ItineraryChatComponent implements AfterViewChecked {
     });
   }
 
-  acceptUpdate(chatItinerary: ChatItinerary): void {
-    const parsed = this.toParsedItinerary(chatItinerary);
-    this.store.setItinerary(parsed);
-    this.itineraryAccepted.emit(parsed);
+  acceptUpdate(itinerary: ChatItinerary): void {
+    this.store.setItinerary(itinerary);
+    this.itineraryAccepted.emit(itinerary);
     this.messages.update(msgs => [...msgs, {
       role: 'assistant',
       text: 'Great — your itinerary has been updated. Review the changes above.',
@@ -112,28 +110,5 @@ export class ItineraryChatComponent implements AfterViewChecked {
   private scrollToBottom(): void {
     const el = this.messageListRef?.nativeElement;
     if (el) el.scrollTop = el.scrollHeight;
-  }
-
-  private toParsedItinerary(chat: ChatItinerary): ParsedItinerary {
-    return {
-      destinations: chat.destinations.map(d => ({
-        name: d.name,
-        raw_name: d.name,
-        city: d.city,
-        region: d.region,
-        day_number: d.dayNumber,
-        activity_type: d.activityType,
-        geo_point: (d.lat != null && d.lng != null) ? { lat: d.lat, lng: d.lng } : null
-      })),
-      travel_dates: (chat.startDate && chat.endDate)
-        ? { start: chat.startDate, end: chat.endDate }
-        : null,
-      raw_text_preview: chat.rawText?.slice(0, 300) ?? '',
-      parsing_confidence: chat.parsingConfidence === 'high' ? 'high' : 'low',
-      clarification_needed: chat.clarificationNeeded,
-      is_multi_region: chat.isMultiRegion,
-      regions_detected: chat.regionsDetected,
-      parsed_by: 'ai'
-    };
   }
 }

@@ -58,10 +58,10 @@
     </section>
 
     <!-- Travel dates (if detected) -->
-    @if (parsed.travel_dates) {
+    @if (parsed.start_date) {
       <section class="card">
         <h2>Travel Dates</h2>
-        <p>{{ parsed.travel_dates.start }} → {{ parsed.travel_dates.end }}</p>
+        <p>{{ parsed.start_date }} → {{ parsed.end_date }}</p>
       </section>
     }
 

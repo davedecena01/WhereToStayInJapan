@@ -44,6 +44,6 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         context.Response.ContentType = "application/problem+json";
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(problem,
-            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower }));
     }
 }

@@ -119,7 +119,10 @@ try
 
     // HTTP clients
     builder.Services.AddHttpClient("gemini", c =>
-        c.BaseAddress = new Uri("https://generativelanguage.googleapis.com/"));
+    {
+        c.BaseAddress = new Uri("https://generativelanguage.googleapis.com/");
+        c.Timeout = TimeSpan.FromSeconds(60);
+    });
     builder.Services.AddHttpClient("rakuten", c =>
     {
         c.BaseAddress = new Uri("https://app.rakuten.co.jp/");

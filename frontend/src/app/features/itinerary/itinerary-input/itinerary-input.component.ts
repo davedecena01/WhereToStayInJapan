@@ -8,7 +8,6 @@ import { ItineraryStore } from '../../../core/stores/itinerary.store';
 import {
   AtmosphereType,
   BudgetTier,
-  HotelType,
   UserPreferences
 } from '../../../core/models/itinerary.models';
 
@@ -31,11 +30,10 @@ export class ItineraryInputComponent {
   dragOver = signal(false);
 
   preferences: UserPreferences = {
-    checkin: '',
-    checkout: '',
+    check_in: '',
+    check_out: '',
     travelers: 2,
     budget_tier: 'mid',
-    hotel_types: [],
     avoid_long_walking: false,
     must_be_near_station: null,
     preferred_atmosphere: []
@@ -64,8 +62,8 @@ export class ItineraryInputComponent {
   }
 
   validateDates(): void {
-    const { checkin, checkout } = this.preferences;
-    if (checkin && checkout && checkout <= checkin) {
+    const { check_in, check_out } = this.preferences;
+    if (check_in && check_out && check_out <= check_in) {
       this.dateError.set('Check-out date must be after check-in date.');
     } else {
       this.dateError.set(null);
