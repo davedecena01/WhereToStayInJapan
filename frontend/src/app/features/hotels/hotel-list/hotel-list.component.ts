@@ -39,8 +39,8 @@ export class HotelListComponent implements OnInit {
     this.api.getHotels(
       this.areaId,
       prefs?.budget_tier ?? 'mid',
-      prefs?.checkin ?? '',
-      prefs?.checkout ?? '',
+      prefs?.check_in ?? '',
+      prefs?.check_out ?? '',
       prefs?.travelers ?? 1,
       page
     ).subscribe({
