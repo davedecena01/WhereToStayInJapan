@@ -57,29 +57,42 @@ public class RecommendationService(
     {
         var matrix = new TravelTimeMatrix();
 
-        // Geocode unique destination names first to avoid redundant calls
-        var geocodedPoints = new Dictionary<string, GeoPoint?>(StringComparer.OrdinalIgnoreCase);
-        foreach (var dest in destinations)
-        {
-            if (geocodedPoints.ContainsKey(dest.Name)) continue;
+        // Use distinct city-level waypoints to cap routing calls (city ≈ area, avoids N×M explosion)
+        var routingWaypoints = destinations
+            .GroupBy(d => d.City ?? d.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .ToList();
 
-            GeoPoint? point = dest.Lat.HasValue && dest.Lng.HasValue
-                ? new GeoPoint(dest.Lat.Value, dest.Lng.Value)
-                : await geocodeProvider.GeocodeAsync(dest.Name, ct);
+        // Geocode all unique waypoints in parallel
+        var geocodeTasks = routingWaypoints
+            .Select(async dest =>
+            {
+                GeoPoint? point = dest.Lat.HasValue && dest.Lng.HasValue
+                    ? new GeoPoint(dest.Lat.Value, dest.Lng.Value)
+                    : await geocodeProvider.GeocodeAsync(dest.Name, ct);
+                return (Key: dest.City ?? dest.Name, Point: point);
+            });
 
-            geocodedPoints[dest.Name] = point;
-        }
+        var geocoded = await Task.WhenAll(geocodeTasks);
+        var geocodedPoints = geocoded
+            .Where(r => r.Point is not null)
+            .ToDictionary(r => r.Key, r => r.Point!, StringComparer.OrdinalIgnoreCase);
 
-        foreach (var candidate in candidates)
+        if (geocodedPoints.Count == 0) return matrix;
+
+        // Route each candidate to all geocoded waypoints in parallel
+        await Task.WhenAll(candidates.Select(async candidate =>
         {
             var origin = new GeoPoint((double)candidate.Lat, (double)candidate.Lng);
-            foreach (var (destName, destPoint) in geocodedPoints)
+            var routingTasks = geocodedPoints.Select(async kvp =>
             {
-                if (destPoint is null) continue;
-                var routing = await routingProvider.GetTravelTimeAsync(origin, destPoint, "transit", ct);
-                matrix.Set(candidate.Id, destName, routing?.DurationMins);
-            }
-        }
+                var routing = await routingProvider.GetTravelTimeAsync(origin, kvp.Value, "transit", ct);
+                return (DestName: kvp.Key, Duration: routing?.DurationMins);
+            });
+
+            foreach (var (destName, duration) in await Task.WhenAll(routingTasks))
+                matrix.Set(candidate.Id, destName, duration);
+        }));
 
         return matrix;
     }

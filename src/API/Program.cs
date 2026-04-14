@@ -133,11 +133,15 @@ try
     builder.Services.AddHttpClient("nominatim", c =>
     {
         c.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
+        c.Timeout = TimeSpan.FromSeconds(5);
         c.DefaultRequestHeaders.Add("User-Agent",
             builder.Configuration["Maps:NominatimUserAgent"] ?? "WhereToStayInJapan/1.0");
     });
     builder.Services.AddHttpClient("osrm", c =>
-        c.BaseAddress = new Uri("https://router.project-osrm.org/"));
+    {
+        c.BaseAddress = new Uri("https://router.project-osrm.org/");
+        c.Timeout = TimeSpan.FromSeconds(5);
+    });
 
     // Controllers + CORS
     builder.Services.AddControllers()
