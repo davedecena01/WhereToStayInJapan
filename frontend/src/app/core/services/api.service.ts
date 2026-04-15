@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 import { ChatItinerary, ChatResponse, HotelClickRequest, HotelSearchResult, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
 import { environment } from '../../../environments/environment';
 
@@ -20,7 +20,8 @@ export class ApiService {
   }
 
   getRecommendations(request: RecommendationRequest): Observable<RecommendationResult> {
-    return this.http.post<RecommendationResult>(`${this.base}/api/recommendations`, request);
+    return this.http.post<RecommendationResult>(`${this.base}/api/recommendations`, request)
+      .pipe(timeout(120_000));
   }
 
   sendChatMessage(sessionId: string, message: string, currentItinerary: ChatItinerary | null): Observable<ChatResponse> {

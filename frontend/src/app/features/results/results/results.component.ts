@@ -26,6 +26,10 @@ export class ResultsComponent implements OnInit {
     }
   }
 
+  retryRequest(): void {
+    this.recStore.retry();
+  }
+
   startOver(): void {
     this.itinStore.reset();
     this.recStore.clear();

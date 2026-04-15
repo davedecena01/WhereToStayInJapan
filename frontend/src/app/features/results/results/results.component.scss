@@ -35,6 +35,13 @@
   margin-top: 0.5rem;
 }
 
+.loading-subtext {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
 // ── Error ─────────────────────────────────────────────────────────────────
 
 .error-banner {
@@ -46,6 +53,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.error-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 // ── Header ────────────────────────────────────────────────────────────────
@@ -326,6 +340,20 @@
 }
 
 // ── Actions ───────────────────────────────────────────────────────────────
+
+.btn-primary {
+  background: var(--color-navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: #253d6a; }
+}
 
 .results-actions {
   display: flex;

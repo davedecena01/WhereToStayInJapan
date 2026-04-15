@@ -6,7 +6,8 @@
       <div class="loading-card skeleton"></div>
       <div class="loading-card skeleton"></div>
       <div class="loading-card skeleton"></div>
-      <p class="loading-text">Finding the best areas for your itinerary…</p>
+      <p class="loading-text">{{ recStore.loadingMessage() }}</p>
+      <p class="loading-subtext">First-time routing can take up to 90 seconds while travel times are calculated.</p>
     </div>
   }
 
@@ -14,7 +15,12 @@
   @if (recStore.error() && !recStore.loading()) {
     <div class="error-banner" role="alert">
       <p>{{ recStore.error() }}</p>
-      <a routerLink="/review" class="btn-back">← Back to review</a>
+      <div class="error-actions">
+        @if (recStore.isTimedOut()) {
+          <button class="btn-primary" (click)="retryRequest()">Try Again</button>
+        }
+        <a routerLink="/review" class="btn-back">← Back to review</a>
+      </div>
     </div>
   }
 

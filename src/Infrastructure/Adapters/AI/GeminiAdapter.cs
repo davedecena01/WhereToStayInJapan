@@ -33,12 +33,12 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
     public async Task<ParsedItinerary> ParseItineraryAsync(string rawText, CancellationToken ct = default)
     {
         var prompt = $$"""
-            You are a travel itinerary parser. Extract structured information from the following itinerary text.
+            You are a travel itinerary parser. The input may be a structured day-by-day itinerary OR free-form narrative prose describing travel plans — both are valid input formats.
 
             Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
             {
               "destinations": [
-                { "name": "place name", "city": "city name", "region": "Kanto|Kansai|Chubu|etc", "dayNumber": 1, "activityType": "sightseeing|food|accommodation|transport|null" }
+                { "name": "place name", "city": "city name", "region": "Kanto|Kansai|Chubu|etc", "dayNumber": null, "activityType": "sightseeing|food|accommodation|transport|null" }
               ],
               "regionsDetected": ["Kanto"],
               "isMultiRegion": false,
@@ -48,11 +48,18 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
               "clarificationNeeded": false
             }
 
-            Rules:
+            Extraction rules:
+            - Extract ALL tourist destinations, cities, districts, landmarks, and named places mentioned — even ones referenced in passing
+            - For narrative prose (no explicit day structure): use dayNumber null for all entries
+            - For structured itineraries (e.g. "Day 1:", "Day 2:"): use the written day number
+            - Look for implicit destinations — "heading to Osaka" → extract Osaka; "see Fuji" → extract Mt. Fuji; "Kyoto temples" → extract Kyoto
+            - When in doubt, include the place — over-extraction is better than missing destinations
             - Use Japanese region names: Kanto (Tokyo area), Kansai (Kyoto/Osaka/Nara), Chubu (Nagoya/Fuji), Tohoku, Kyushu, Hokkaido, Chugoku
-            - parsingConfidence is "high" if places and dates are clear, "medium" if partial, "low" if very ambiguous
-            - clarificationNeeded is true if itinerary is too vague to extract meaningful places
-            - dayNumber starts at 1; use null if no day structure is apparent
+            - parsingConfidence is "high" if specific places are clearly named, "medium" if some are vague, "low" if no identifiable places found
+            - clarificationNeeded is true ONLY if the text contains no identifiable Japanese places at all
+
+            Narrative example: "We want to visit Fushimi Inari and Arashiyama in Kyoto, then do Dotonbori in Osaka"
+            → extracts: Fushimi Inari (city: Kyoto, region: Kansai), Arashiyama (city: Kyoto, region: Kansai), Dotonbori (city: Osaka, region: Kansai)
 
             Itinerary text:
             {{rawText}}
