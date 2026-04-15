@@ -12,9 +12,10 @@ public class RakutenHotelAdapter(
 {
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
-    private string ApiKey => config["Hotels:ApiKey"] ?? string.Empty;
-    private double MinRating => double.TryParse(config["Hotels:MinReviewRating"], out var r) ? r : 3.5;
-    private int RadiusKm => int.TryParse(config["Hotels:SearchRadiusKm"], out var r) ? r : 2;
+    private string ApiKey      => config["Hotels:ApiKey"]      ?? string.Empty;
+    private string AffiliateId => config["Hotels:AffiliateId"] ?? config["RAKUTEN_AFFILIATE_ID"] ?? string.Empty;
+    private double MinRating   => double.TryParse(config["Hotels:MinReviewRating"], out var r) ? r : 3.5;
+    private int    RadiusKm    => int.TryParse(config["Hotels:SearchRadiusKm"], out var r) ? r : 2;
 
     public async Task<IReadOnlyList<HotelItem>> SearchAsync(HotelSearchParams p, CancellationToken ct = default)
     {
@@ -55,10 +56,9 @@ public class RakutenHotelAdapter(
         }
     }
 
-    private static HotelItem MapToHotelItem(RakutenHotelBasicInfo info, HotelSearchParams p)
+    private HotelItem MapToHotelItem(RakutenHotelBasicInfo info, HotelSearchParams p)
     {
-        var affiliateId = string.Empty; // extend later
-        var deepLink = BuildDeepLink(info.HotelInformationUrl ?? $"https://travel.rakuten.co.jp/HOTEL/{info.HotelNo}/", p, affiliateId);
+        var deepLink = BuildDeepLink(info.HotelInformationUrl ?? $"https://travel.rakuten.co.jp/HOTEL/{info.HotelNo}/", p, AffiliateId);
 
         return new HotelItem(
             HotelId:             info.HotelNo.ToString(),
