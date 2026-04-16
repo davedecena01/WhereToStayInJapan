@@ -13,6 +13,7 @@ public class RakutenHotelAdapter(
     private static readonly JsonSerializerOptions JsonOpts = new() { PropertyNameCaseInsensitive = true };
 
     private string ApiKey      => config["Hotels:ApiKey"]      ?? string.Empty;
+    private string AccessKey   => config["Hotels:AccessKey"]   ?? string.Empty;
     private string AffiliateId => config["Hotels:AffiliateId"] ?? config["RAKUTEN_AFFILIATE_ID"] ?? string.Empty;
     private double MinRating   => double.TryParse(config["Hotels:MinReviewRating"], out var r) ? r : 3.5;
     private int    RadiusKm    => int.TryParse(config["Hotels:SearchRadiusKm"], out var r) ? r : 2;
@@ -21,8 +22,9 @@ public class RakutenHotelAdapter(
     {
         var (minCharge, maxCharge) = GetPriceRange(p.BudgetTier);
 
-        var url = $"services/api/Travel/VacantHotelSearch/20170426" +
+        var url = $"engine/api/Travel/VacantHotelSearch/20170426" +
                   $"?applicationId={Uri.EscapeDataString(ApiKey)}" +
+                  $"&accessKey={Uri.EscapeDataString(AccessKey)}" +
                   $"&format=json" +
                   $"&latitude={p.Lat:F6}" +
                   $"&longitude={p.Lng:F6}" +

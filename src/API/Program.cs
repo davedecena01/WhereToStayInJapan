@@ -125,10 +125,7 @@ try
     });
     builder.Services.AddHttpClient("rakuten", c =>
     {
-        c.BaseAddress = new Uri("https://app.rakuten.co.jp/");
-        // Rakuten Travel API enforces "Allowed websites" via Referer header check.
-        // The registered domain for this application ID is davedecena01.github.io.
-        c.DefaultRequestHeaders.Referrer = new Uri("https://davedecena01.github.io");
+        c.BaseAddress = new Uri("https://openapi.rakuten.co.jp/");
     });
     builder.Services.AddHttpClient("nominatim", c =>
     {
