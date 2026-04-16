@@ -21,7 +21,7 @@ public class RakutenHotelAdapter(
     {
         var (minCharge, maxCharge) = GetPriceRange(p.BudgetTier);
 
-        var url = $"services/api/Travel/HotelSearch/20170426" +
+        var url = $"services/api/Travel/VacantHotelSearch/20170426" +
                   $"?applicationId={Uri.EscapeDataString(ApiKey)}" +
                   $"&format=json" +
                   $"&latitude={p.Lat:F6}" +
