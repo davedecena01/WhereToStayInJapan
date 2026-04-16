@@ -39,7 +39,16 @@ public class RakutenHotelAdapter(
 
         try
         {
-            var json = await http.GetStringAsync(url, ct);
+            using var httpResponse = await http.GetAsync(url, ct);
+            var json = await httpResponse.Content.ReadAsStringAsync(ct);
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                logger.LogError("Rakuten API returned {Status} for ({Lat},{Lng}): {Body}",
+                    (int)httpResponse.StatusCode, p.Lat, p.Lng, json);
+                throw new HttpRequestException($"Rakuten returned {(int)httpResponse.StatusCode}: {json}", null, httpResponse.StatusCode);
+            }
+
             var response = JsonSerializer.Deserialize<RakutenSearchResponse>(json, JsonOpts);
             if (response?.Hotels is null) return [];
 
@@ -49,7 +58,7 @@ public class RakutenHotelAdapter(
                 .ToList()
                 .AsReadOnly();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not HotelProviderException)
         {
             logger.LogError(ex, "Rakuten hotel search failed for ({Lat},{Lng})", p.Lat, p.Lng);
             throw new HotelProviderException("Rakuten Travel API is unavailable", ex);
