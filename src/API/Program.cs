@@ -123,9 +123,14 @@ try
         c.BaseAddress = new Uri("https://generativelanguage.googleapis.com/");
         c.Timeout = TimeSpan.FromSeconds(60);
     });
+    // Rakuten requests are routed through a Vercel proxy to satisfy Rakuten's IP-based access
+    // control (Railway IPs are blocked; Vercel IPs match the registered application domain).
     builder.Services.AddHttpClient("rakuten", c =>
     {
-        c.BaseAddress = new Uri("https://openapi.rakuten.co.jp/");
+        c.BaseAddress = new Uri("https://where-to-stay-in-japan.vercel.app/");
+        var proxySecret = builder.Configuration["Hotels:ProxySecret"];
+        if (!string.IsNullOrEmpty(proxySecret))
+            c.DefaultRequestHeaders.Add("x-proxy-secret", proxySecret);
     });
     builder.Services.AddHttpClient("nominatim", c =>
     {

@@ -2,6 +2,6 @@
   "buildCommand": "npm run build -- --configuration production",
   "outputDirectory": "dist/frontend/browser",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
