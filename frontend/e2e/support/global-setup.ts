@@ -31,14 +31,18 @@ export default async function globalSetup(): Promise<void> {
     const result = await recRes.json();
     const areaId = result.recommendations?.[0]?.area_id as string | undefined;
 
-    if (areaId) {
-      const stateDir = join(__dirname, '../.state');
-      mkdirSync(stateDir, { recursive: true });
-      writeFileSync(join(stateDir, 'area-id.json'), JSON.stringify({ area_id: areaId }));
-      console.log(`[global-setup] Seeded area_id: ${areaId}`);
+    if (!areaId) {
+      console.warn('[global-setup] No area_id in recommendations response — hotel tests will use fallback');
+      return;
     }
+
+    const stateDir = join(__dirname, '../.state');
+    mkdirSync(stateDir, { recursive: true });
+    writeFileSync(join(stateDir, 'area-id.json'), JSON.stringify({ area_id: areaId }));
+    console.log(`[global-setup] Seeded area_id: ${areaId}`);
   } catch (err) {
-    console.warn('[global-setup] Error fetching area_id:', err);
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.warn(`[global-setup] Error fetching area_id (${errMsg}) — hotel tests will use fallback`);
   } finally {
     await context.dispose();
   }
