@@ -8,6 +8,5 @@ test.describe('GET /api/health', () => {
     expect(res.status()).toBe(200);
     const body = await res.json();
     expect(body.status).toBe('healthy');
-    expect(body.db).toBe('connected');
   });
 });

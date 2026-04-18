@@ -35,6 +35,8 @@ test.describe('POST /api/itinerary/parse (text)', () => {
     });
 
     expect(res.status()).toBe(400);
+    const body = await res.json();
+    expect(body.error ?? body.title ?? body.detail).toBeTruthy();
   });
 });
 
