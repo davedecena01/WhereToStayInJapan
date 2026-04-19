@@ -69,6 +69,50 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
         return ParseItineraryResponse(responseText, rawText);
     }
 
+    public async Task<ParsedItinerary> EditItineraryAsync(
+        string instruction, ParsedItinerary current, CancellationToken ct = default)
+    {
+        var currentJson = JsonSerializer.Serialize(
+            current.Destinations.Select(d => new
+            {
+                name = d.Name,
+                city = d.City,
+                region = d.Region,
+                dayNumber = d.DayNumber,
+                activityType = d.ActivityType
+            }),
+            JsonOpts);
+
+        var prompt = $$"""
+            You are an itinerary editor. Apply the user's edit instruction to the destination list below.
+
+            Current destinations (JSON):
+            {{currentJson}}
+
+            User instruction: "{{instruction}}"
+
+            Rules:
+            - Apply ONLY the requested change — do not add, remove, or reorder anything else
+            - Keep all existing fields (name, city, region, dayNumber, activityType) unchanged unless the instruction targets them
+            - Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
+            {
+              "destinations": [ { "name": "...", "city": "...", "region": "...", "dayNumber": null, "activityType": "..." } ],
+              "regionsDetected": ["Kanto"],
+              "isMultiRegion": false,
+              "startDate": null,
+              "endDate": null,
+              "parsingConfidence": "high",
+              "clarificationNeeded": false
+            }
+            """;
+
+        var responseText = await CallGeminiAsync(prompt, ct);
+        var edited = ParseItineraryResponse(responseText, current.RawText);
+
+        // If AI returned nothing useful, return the original unchanged
+        return edited.Destinations.Count > 0 ? edited : current;
+    }
+
     public async Task<string> GenerateExplanationAsync(
         string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
     {

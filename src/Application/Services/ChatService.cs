@@ -13,27 +13,48 @@ public class ChatService(IAIProvider aiProvider) : IChatService
         ParsedItineraryDto? currentItinerary,
         CancellationToken ct = default)
     {
-        // If message looks like a new itinerary or user asks to re-parse, attempt AI parse
+        // If message looks like a new itinerary paste, re-parse it entirely
         if (LooksLikeItineraryText(message))
         {
             var parsed = await aiProvider.ParseItineraryAsync(message, ct);
-            var updatedDto = ToDto(parsed);
             return new ChatResponseDto(
                 Message: "I've parsed your itinerary. Please review and confirm the details below.",
-                UpdatedItinerary: updatedDto,
+                UpdatedItinerary: ToDto(parsed),
                 HasItineraryUpdate: true);
         }
 
-        // General chat — respond based on itinerary context
-        var context = BuildContext(currentItinerary);
+        // If message looks like an edit command (remove/add/move/etc.), apply it to current itinerary
+        if (LooksLikeEditCommand(message) && currentItinerary is { Destinations.Count: > 0 })
+        {
+            var current = ToDomain(currentItinerary);
+            var edited = await aiProvider.EditItineraryAsync(message, current, ct);
+            return new ChatResponseDto(
+                Message: "Done! I've updated your itinerary. Does it look right?",
+                UpdatedItinerary: ToDto(edited),
+                HasItineraryUpdate: true);
+        }
+
+        // General question — generate a contextual explanation
         var explanation = await aiProvider.GenerateExplanationAsync(
             areaName: ExtractFirstArea(currentItinerary),
             city: ExtractFirstCity(currentItinerary),
             destinations: ExtractDestinationNames(currentItinerary),
             ct);
 
-        var reply = $"{explanation}\n\nIs there anything specific about your itinerary you'd like to adjust?";
-        return new ChatResponseDto(Message: reply, UpdatedItinerary: null, HasItineraryUpdate: false);
+        return new ChatResponseDto(
+            Message: $"{explanation}\n\nIs there anything specific about your itinerary you'd like to adjust?",
+            UpdatedItinerary: null,
+            HasItineraryUpdate: false);
+    }
+
+    private static bool LooksLikeEditCommand(string message)
+    {
+        var lower = message.ToLowerInvariant();
+        return lower.StartsWith("remove ") || lower.StartsWith("add ") || lower.StartsWith("move ")
+            || lower.StartsWith("delete ") || lower.StartsWith("change ") || lower.StartsWith("rename ")
+            || lower.StartsWith("swap ") || lower.StartsWith("put ") || lower.StartsWith("transfer ")
+            || lower.Contains(" remove ") || lower.Contains(" add ") || lower.Contains(" move ")
+            || lower.Contains(" delete ") || lower.Contains(" change day");
     }
 
     private static bool LooksLikeItineraryText(string message)
@@ -45,13 +66,6 @@ public class ChatService(IAIProvider aiProvider) : IChatService
             || lower.Contains("depart") || lower.Contains("hotel") || lower.Contains("night");
     }
 
-    private static string BuildContext(ParsedItineraryDto? itinerary)
-    {
-        if (itinerary is null || itinerary.Destinations.Count == 0)
-            return "no current itinerary";
-        return string.Join(", ", itinerary.Destinations.Select(d => d.Name));
-    }
-
     private static string ExtractFirstArea(ParsedItineraryDto? dto)
         => dto?.Destinations.FirstOrDefault()?.Name ?? "your area";
 
@@ -60,6 +74,25 @@ public class ChatService(IAIProvider aiProvider) : IChatService
 
     private static IEnumerable<string> ExtractDestinationNames(ParsedItineraryDto? dto)
         => dto?.Destinations.Select(d => d.Name) ?? [];
+
+    private static ParsedItinerary ToDomain(ParsedItineraryDto dto) => new()
+    {
+        RawText = dto.RawText ?? string.Empty,
+        ParsingConfidence = dto.ParsingConfidence ?? "high",
+        ClarificationNeeded = dto.ClarificationNeeded,
+        IsMultiRegion = dto.IsMultiRegion,
+        RegionsDetected = dto.RegionsDetected ?? [],
+        StartDate = dto.StartDate,
+        EndDate = dto.EndDate,
+        Destinations = dto.Destinations.Select(d => new Destination
+        {
+            Name = d.Name,
+            City = d.City,
+            Region = d.Region,
+            DayNumber = d.DayNumber,
+            ActivityType = d.ActivityType
+        }).ToList()
+    };
 
     private static ParsedItineraryDto ToDto(ParsedItinerary parsed) => new(
         Destinations: parsed.Destinations.Select(d => new DestinationDto(
