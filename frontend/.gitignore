@@ -1,5 +1,11 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Local E2E test environment (contains secrets — never commit)
+.env.playwright
+
+# Playwright session state (contains auth cookies — never commit)
+e2e/.state/
+
 # Compiled output
 /dist
 /tmp

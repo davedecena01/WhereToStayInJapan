@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { join } from 'path';
 
 // When FRONTEND_URL is set, tests run against that URL (e.g. Vercel deployment).
 // When unset, tests run against a local ng serve instance on port 4200.
@@ -7,14 +8,10 @@ const LOCAL_URL = 'http://localhost:4200';
 const baseURL = FRONTEND_URL ?? LOCAL_URL;
 const useLocalServer = !FRONTEND_URL;
 
-// Vercel Deployment Protection bypass secret.
-// Set VERCEL_AUTOMATION_BYPASS_SECRET in your environment to run UI tests
-// against a protected Vercel preview deployment.
-// See: https://vercel.com/docs/security/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation
-const bypassSecret = process.env['VERCEL_AUTOMATION_BYPASS_SECRET'];
-const extraHTTPHeaders = bypassSecret
-  ? { 'x-vercel-protection-bypass': bypassSecret }
-  : {};
+// Vercel bypass auth is established in global-setup via cookie (storageState).
+// The cookie approach is used instead of extraHTTPHeaders so that cross-origin
+// requests (Railway API, Google Fonts) are not affected by the bypass header.
+const VERCEL_AUTH_PATH = join(__dirname, 'e2e/.state/vercel-auth.json');
 
 export default defineConfig({
   testDir: './e2e',
@@ -26,7 +23,7 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    extraHTTPHeaders,
+    storageState: VERCEL_AUTH_PATH,
   },
   // Start a local Angular dev server when not targeting a remote deployment.
   webServer: useLocalServer

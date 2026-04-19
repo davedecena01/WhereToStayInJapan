@@ -75,22 +75,24 @@ test.describe('Input page — /', () => {
   });
 
   test('pasting text enables submit and navigates to /review on success', async ({ page }) => {
-    test.setTimeout(90_000);
+    const mockParse = { destinations: [{ name: 'Shinjuku', city: 'Tokyo', region: 'Kanto', day_number: 1, activity_type: null }], regions_detected: ['Kanto'], is_multi_region: false, parsing_confidence: 'high', clarification_needed: false, raw_text: SIMPLE_TEXT };
+    await page.route('**/api/itinerary/parse', async route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockParse) }));
     await page.locator('textarea').fill(SIMPLE_TEXT);
     await expect(page.locator('button.btn-primary')).toBeEnabled();
     await page.locator('button.btn-primary').click();
-    await page.waitForURL('**/review', { timeout: 60_000 });
+    await page.waitForURL('**/review', { timeout: 15_000 });
   });
 
   test('uploading valid .txt file enables submit and navigates to /review', async ({ page }) => {
-    test.setTimeout(90_000);
+    const mockParse = { destinations: [{ name: 'Tokyo', city: 'Tokyo', region: 'Kanto', day_number: 1, activity_type: null }], regions_detected: ['Kanto'], is_multi_region: false, parsing_confidence: 'high', clarification_needed: false, raw_text: 'simple text' };
+    await page.route('**/api/itinerary/parse**', async route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockParse) }));
     await page.locator('input[type="file"]').setInputFiles(
       join(__dirname, '../fixtures/simple.txt')
     );
 
     await expect(page.locator('button.btn-primary')).toBeEnabled();
     await page.locator('button.btn-primary').click();
-    await page.waitForURL('**/review', { timeout: 60_000 });
+    await page.waitForURL('**/review', { timeout: 15_000 });
   });
 
   test('no unhandled JS console errors on page load', async ({ page }) => {
