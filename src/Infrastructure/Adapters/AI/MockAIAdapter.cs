@@ -24,6 +24,9 @@ public class MockAIAdapter : IAIProvider
         return Task.FromResult(result);
     }
 
+    public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
+        => Task.FromResult(current);
+
     public Task<string> GenerateExplanationAsync(string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult($"{areaName} in {city} is an excellent base for your itinerary, offering convenient access to major transit hubs and a wide range of accommodation options.");
 

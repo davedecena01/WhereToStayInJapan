@@ -30,6 +30,9 @@ public class CachedAIProvider(IAIProvider inner, ICacheService cache) : IAIProvi
             ct) ?? await inner.ParseItineraryAsync(rawText, ct);
     }
 
+    public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
+        => inner.EditItineraryAsync(instruction, current, ct);
+
     public async Task<string> GenerateExplanationAsync(string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
     {
         var input = $"{areaName}:{city}:{string.Join(",", destinations)}";

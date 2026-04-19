@@ -49,6 +49,9 @@ public partial class RulesOnlyAdapter : IAIProvider
         });
     }
 
+    public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
+        => Task.FromResult(current);
+
     public Task<string> GenerateExplanationAsync(string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult($"{areaName} is a central area in {city} with good transport links.");
 
