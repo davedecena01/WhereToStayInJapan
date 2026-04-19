@@ -9,7 +9,7 @@ using WhereToStayInJapan.Domain.Models;
 
 namespace WhereToStayInJapan.Infrastructure.Adapters.AI;
 
-public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAIProvider
+public partial class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAIProvider
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -196,11 +196,22 @@ public class GeminiAdapter(HttpClient http, string apiKey, string modelId) : IAI
     private static string StripMarkdownJson(string text)
     {
         var t = text.Trim();
+
+        // Try regex extraction first — handles cases where Gemini wraps JSON in
+        // explanation text or uses non-standard markdown fences.
+        var jsonMatch = JsonObjectRegex().Match(t);
+        if (jsonMatch.Success)
+            return jsonMatch.Value;
+
+        // Fall back to stripping markdown fences
         if (t.StartsWith("```json")) t = t[7..];
         else if (t.StartsWith("```")) t = t[3..];
         if (t.EndsWith("```")) t = t[..^3];
         return t.Trim();
     }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"\{[\s\S]*\}", System.Text.RegularExpressions.RegexOptions.None)]
+    private static partial System.Text.RegularExpressions.Regex JsonObjectRegex();
 
     private static DateOnly? ParseDateOnly(string? value)
     {
