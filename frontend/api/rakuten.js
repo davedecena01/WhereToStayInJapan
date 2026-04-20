@@ -29,12 +29,19 @@ module.exports = async function handler(req, res) {
   params.set('accessKey', accessKey);
   params.set('format', 'json');
 
-  const rakutenUrl =
-    `https://openapi.rakuten.co.jp/engine/api/Travel/VacantHotelSearch/20170426?${params.toString()}`;
+  const rakutenPath =
+    `/engine/api/Travel/VacantHotelSearch/20170426?${params.toString()}`;
 
   try {
     const { status, body } = await new Promise((resolve, reject) => {
-      https.get(rakutenUrl, (upstream) => {
+      https.get({
+        hostname: 'openapi.rakuten.co.jp',
+        path: rakutenPath,
+        headers: {
+          'Referer': 'https://where-to-stay-in-japan.vercel.app/',
+          'User-Agent': 'WhereToStayInJapan/1.0'
+        }
+      }, (upstream) => {
         let raw = '';
         upstream.on('data', (chunk) => { raw += chunk; });
         upstream.on('end', () => resolve({ status: upstream.statusCode, body: raw }));
