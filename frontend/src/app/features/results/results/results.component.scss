@@ -311,9 +311,14 @@
 .hotel-price { font-size: 0.85rem; color: #555; font-weight: 600; flex-shrink: 0; }
 .hotel-rating { font-size: 0.8rem; color: var(--color-gold); flex-shrink: 0; }
 
+.hotel-cta {
+  border-top: 1px solid #f0e8e0;
+  padding-top: 0.875rem;
+  margin-top: 0.875rem;
+}
+
 .view-all-hotels {
   display: inline-block;
-  margin-top: 0.5rem;
   font-size: 0.85rem;
   color: var(--primary, #c0636b);
   text-decoration: none;

@@ -110,7 +110,7 @@
               </div>
             </div>
 
-            <!-- Hotel preview -->
+            <!-- Hotel preview (only when available) -->
             @if (rec.hotels_available && rec.hotel_preview.length > 0) {
               <div class="hotel-section">
                 <h3 class="section-label">Sample Hotels</h3>
@@ -125,13 +125,17 @@
                     </a>
                   }
                 </div>
-                <a class="view-all-hotels"
-                   [routerLink]="['/hotels', rec.area_id]"
-                   [queryParams]="{ area: rec.area_name }">
-                  View all hotels →
-                </a>
               </div>
             }
+
+            <!-- Hotels CTA — always visible -->
+            <div class="hotel-cta">
+              <a class="view-all-hotels"
+                 [routerLink]="['/hotels', rec.area_id]"
+                 [queryParams]="{ area: rec.area_name }">
+                Find hotels in {{ rec.area_name }} →
+              </a>
+            </div>
 
             <!-- Food suggestions -->
             @if (rec.featured_food.length > 0) {
