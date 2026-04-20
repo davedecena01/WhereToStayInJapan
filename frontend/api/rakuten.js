@@ -5,6 +5,8 @@
 const https = require('https');
 
 module.exports = async function handler(req, res) {
+  console.log('[rakuten-proxy] incoming request', req.method, Object.keys(req.query || {}).join(','));
+
   function json(status, body) {
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(body));
