@@ -40,7 +40,7 @@ module.exports = async function handler(req, res) {
         hostname: 'openapi.rakuten.co.jp',
         path: rakutenPath,
         headers: {
-          'Referer': 'https://where-to-stay-in-japan.vercel.app/',
+          'Referer': 'https://where-to-stay-in-japan.vercel.app',
           'User-Agent': 'WhereToStayInJapan/1.0'
         }
       }, (upstream) => {
