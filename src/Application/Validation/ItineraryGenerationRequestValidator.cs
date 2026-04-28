@@ -13,6 +13,8 @@ public class ItineraryGenerationRequestValidator : AbstractValidator<ItineraryGe
     public ItineraryGenerationRequestValidator()
     {
         RuleFor(x => x.Mode)
+            .NotEmpty()
+            .WithMessage("Mode is required.")
             .Must(m => ValidModes.Contains(m))
             .WithMessage("Mode must be 'standard' or 'challenge'.");
 
@@ -28,18 +30,21 @@ public class ItineraryGenerationRequestValidator : AbstractValidator<ItineraryGe
         {
             RuleFor(x => x.TravelStyle)
                 .NotEmpty()
+                .WithMessage("Travel style is required for standard mode.")
                 .Must(s => s == null || ValidStyles.Contains(s))
-                .WithMessage("Travel style is required for standard mode.");
+                .WithMessage("Travel style must be one of: cultural, foodie, nature, urban, mix.");
 
             RuleFor(x => x.BudgetTier)
                 .NotEmpty()
+                .WithMessage("Budget tier is required for standard mode.")
                 .Must(b => b == null || ValidBudgets.Contains(b))
-                .WithMessage("Budget tier is required for standard mode.");
+                .WithMessage("Budget tier must be one of: budget, mid, luxury.");
 
             RuleFor(x => x.Pace)
                 .NotEmpty()
+                .WithMessage("Pace is required for standard mode.")
                 .Must(p => p == null || ValidPaces.Contains(p))
-                .WithMessage("Pace is required for standard mode.");
+                .WithMessage("Pace must be one of: relaxed, moderate, packed.");
         });
     }
 }
