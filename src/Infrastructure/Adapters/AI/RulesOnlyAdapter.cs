@@ -52,6 +52,9 @@ public partial class RulesOnlyAdapter : IAIProvider
     public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
         => Task.FromResult(current);
 
+    public Task<string> ChatAsync(string message, IEnumerable<string> destinations, CancellationToken ct = default)
+        => Task.FromResult("I can help refine your itinerary. Try asking me to add, remove, or move destinations.");
+
     public Task<string> GenerateExplanationAsync(string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult($"{areaName} is a central area in {city} with good transport links.");
 

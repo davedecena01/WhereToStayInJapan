@@ -27,6 +27,9 @@ public class MockAIAdapter : IAIProvider
     public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
         => Task.FromResult(current);
 
+    public Task<string> ChatAsync(string message, IEnumerable<string> destinations, CancellationToken ct = default)
+        => Task.FromResult("I can help you plan your Japan trip! Feel free to ask about transportation, areas to stay, or anything about your itinerary.");
+
     public Task<string> GenerateExplanationAsync(string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult($"{areaName} in {city} is an excellent base for your itinerary, offering convenient access to major transit hubs and a wide range of accommodation options.");
 
