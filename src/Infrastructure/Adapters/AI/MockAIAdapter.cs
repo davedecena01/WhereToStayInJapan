@@ -1,3 +1,4 @@
+using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 
@@ -26,6 +27,26 @@ public class MockAIAdapter : IAIProvider
 
     public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
         => Task.FromResult(current);
+
+    public Task<ParsedItinerary> GenerateItineraryAsync(ItineraryGenerationRequestDto request, CancellationToken ct = default)
+    {
+        var result = new ParsedItinerary
+        {
+            ParsingConfidence = "high",
+            ClarificationNeeded = false,
+            Destinations =
+            [
+                new Destination { Name = "Shinjuku", City = "Tokyo", Region = "Kanto", DayNumber = 1 },
+                new Destination { Name = "Asakusa", City = "Tokyo", Region = "Kanto", DayNumber = 2 },
+                new Destination { Name = "Fushimi Inari", City = "Kyoto", Region = "Kansai", DayNumber = 3 },
+                new Destination { Name = "Arashiyama", City = "Kyoto", Region = "Kansai", DayNumber = 4 },
+                new Destination { Name = "Dotonbori", City = "Osaka", Region = "Kansai", DayNumber = 5 }
+            ],
+            RegionsDetected = ["Kanto", "Kansai"],
+            IsMultiRegion = true
+        };
+        return Task.FromResult(result);
+    }
 
     public Task<string> ChatAsync(string message, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult("I can help you plan your Japan trip! Feel free to ask about transportation, areas to stay, or anything about your itinerary.");
