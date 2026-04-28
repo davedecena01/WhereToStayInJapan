@@ -34,15 +34,14 @@ public class ChatService(IAIProvider aiProvider) : IChatService
                 HasItineraryUpdate: true);
         }
 
-        // General question — generate a contextual explanation
-        var explanation = await aiProvider.GenerateExplanationAsync(
-            areaName: ExtractFirstArea(currentItinerary),
-            city: ExtractFirstCity(currentItinerary),
-            destinations: ExtractDestinationNames(currentItinerary),
+        // General question — answer using itinerary-grounded chat with guardrails
+        var reply = await aiProvider.ChatAsync(
+            message,
+            ExtractDestinationNames(currentItinerary),
             ct);
 
         return new ChatResponseDto(
-            Message: $"{explanation}\n\nIs there anything specific about your itinerary you'd like to adjust?",
+            Message: reply,
             UpdatedItinerary: null,
             HasItineraryUpdate: false);
     }
