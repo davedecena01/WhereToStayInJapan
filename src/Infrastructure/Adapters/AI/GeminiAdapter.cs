@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Polly;
 using Polly.Retry;
+using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 
@@ -138,6 +139,17 @@ public partial class GeminiAdapter(HttpClient http, string apiKey, string modelI
         return await CallGeminiAsync(prompt, ct);
     }
 
+    public async Task<ParsedItinerary> GenerateItineraryAsync(ItineraryGenerationRequestDto request, CancellationToken ct = default)
+    {
+        var regionList = string.Join(", ", request.Regions);
+        var prompt = request.Mode == "challenge"
+            ? BuildChallengePrompt(regionList, request.DurationDays)
+            : BuildStandardPrompt(regionList, request.DurationDays, request.TravelStyle!, request.BudgetTier!, request.Pace!);
+
+        var responseText = await CallGeminiAsync(prompt, ct);
+        return ParseItineraryResponse(responseText, string.Empty);
+    }
+
     public async Task<string> GenerateExplanationAsync(
         string areaName, string city, IEnumerable<string> destinations, CancellationToken ct = default)
     {
@@ -211,6 +223,75 @@ public partial class GeminiAdapter(HttpClient http, string apiKey, string modelI
             return text.Trim();
         }, ct);
     }
+
+    private static string BuildStandardPrompt(string regions, int days, string style, string budget, string pace) => $$"""
+        You are a Japan travel itinerary generator. Generate a {{days}}-day Japan itinerary for a {{style}} traveller visiting: {{regions}}, at {{pace}} pace, with a {{budget}} budget.
+
+        Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
+        {
+          "destinations": [
+            { "name": "place name", "city": "city name", "region": "Kanto|Kansai|Chubu|etc", "dayNumber": 1, "activityType": "sightseeing|food|accommodation|transport" }
+          ],
+          "regionsDetected": ["Kanto"],
+          "isMultiRegion": false,
+          "startDate": null,
+          "endDate": null,
+          "parsingConfidence": "high",
+          "clarificationNeeded": false
+        }
+
+        Rules:
+        - Generate destinations per day based on pace: relaxed=2 destinations/day, moderate=3/day, packed=4/day
+        - Travel style guide: cultural=temples/shrines/museums, foodie=markets/restaurants/food streets, nature=parks/mountains/gardens, urban=shopping/nightlife/modern districts, mix=balanced combination
+        - Set dayNumber correctly (1-based, matching the day of the trip)
+        - Set parsingConfidence to "high" and clarificationNeeded to false
+        - Return real, specific place names that exist in Japan
+        - Use Japanese region names: Kanto (Tokyo area), Kansai (Kyoto/Osaka/Nara), Chubu (Nagoya/Fuji), Tohoku, Kyushu, Hokkaido, Okinawa
+        """;
+
+    private static string BuildChallengePrompt(string regions, int days) => $$"""
+        You are a Japan travel itinerary generator specializing in off-the-beaten-path experiences. Generate a {{days}}-day Japan challenge itinerary for: {{regions}}.
+
+        STRICTLY FORBIDDEN — do not include these or anything similar:
+        - Senso-ji Temple, Asakusa
+        - Fushimi Inari Shrine
+        - Shibuya Crossing / Scramble Square
+        - Dotonbori, Namba
+        - Arashiyama bamboo grove
+        - Kinkaku-ji (Golden Pavilion)
+        - teamLab venues, DisneySea, Universal Studios Japan
+        - Tsukiji outer market
+        - Shinjuku main tourist strips (Kabukicho, Omoide Yokocho)
+
+        FOCUS ON:
+        - Obscure rural towns (e.g. Tsumago, Magome, Ine, Naoshima, Tono, Kakunodate, Gujo Hachiman)
+        - Hidden temples and shrines with no crowds
+        - Local neighbourhood shotengai (covered shopping streets) not in tourist guides
+        - Lesser-known onsen towns (not Hakone main area, not Beppu central)
+        - Regional foods and markets tourists rarely visit
+        - Places experienced Japan travellers specifically seek out
+
+        Return ONLY a valid JSON object with this exact structure (no markdown, no explanation):
+        {
+          "destinations": [
+            { "name": "place name", "city": "city name", "region": "Kanto|Kansai|Chubu|etc", "dayNumber": 1, "activityType": "sightseeing|food|accommodation|transport" }
+          ],
+          "regionsDetected": ["Kanto"],
+          "isMultiRegion": false,
+          "startDate": null,
+          "endDate": null,
+          "parsingConfidence": "high",
+          "clarificationNeeded": false
+        }
+
+        Rules:
+        - Generate 3–4 destinations per day
+        - Every destination must be genuinely obscure — if a first-time Japan visitor would immediately recognise it, reject it
+        - Set dayNumber correctly (1-based)
+        - Set parsingConfidence to "high" and clarificationNeeded to false
+        - Return real places that exist in Japan
+        - Use Japanese region names: Kanto, Kansai, Chubu, Tohoku, Kyushu, Hokkaido, Okinawa
+        """;
 
     private static ParsedItinerary ParseItineraryResponse(string responseText, string rawText)
     {
