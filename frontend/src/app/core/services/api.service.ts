@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timeout } from 'rxjs';
-import { ChatItinerary, ChatResponse, HotelClickRequest, HotelSearchResult, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
+import { ChatItinerary, ChatResponse, HotelClickRequest, HotelSearchResult, ItineraryGenerationRequest, ParsedItinerary, RecommendationRequest, RecommendationResult } from '../models/itinerary.models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -46,5 +46,10 @@ export class ApiService {
 
   trackHotelClick(req: HotelClickRequest): void {
     this.http.post(`${this.base}/api/analytics/hotel-click`, req).subscribe({ error: () => {} });
+  }
+
+  generateItinerary(request: ItineraryGenerationRequest): Observable<ParsedItinerary> {
+    return this.http.post<ParsedItinerary>(`${this.base}/api/itinerary/generate`, request)
+      .pipe(timeout(60_000));
   }
 }
