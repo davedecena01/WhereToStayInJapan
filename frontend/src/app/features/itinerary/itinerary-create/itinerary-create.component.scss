@@ -1,0 +1,293 @@
+.create-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+// ── Shared card base ────────────────────────────────────────────────────────
+
+.card {
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 12px;
+  padding: 2rem;
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--color-navy);
+    margin-bottom: 0.5rem;
+  }
+}
+
+// ── Step indicator ──────────────────────────────────────────────────────────
+
+.step-indicator {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
+}
+
+// ── Steps ───────────────────────────────────────────────────────────────────
+
+.step {
+  margin-bottom: 1.75rem;
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-navy);
+    margin-bottom: 0.75rem;
+  }
+}
+
+.sub-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+// ── Button groups and chips ─────────────────────────────────────────────────
+
+.button-group,
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.option-btn,
+.chip {
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: transparent;
+  color: var(--color-navy);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-sakura);
+  }
+
+  &.selected {
+    background: var(--color-navy);
+    border-color: var(--color-navy);
+    color: #fff;
+  }
+}
+
+// ── Style cards ─────────────────────────────────────────────────────────────
+
+.style-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.style-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: transparent;
+  color: var(--color-navy);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-sakura);
+    background: #fff5f8;
+  }
+
+  &.selected {
+    background: var(--color-sakura);
+    border-color: var(--color-sakura);
+    color: #fff;
+  }
+}
+
+// ── Challenge section ───────────────────────────────────────────────────────
+
+.challenge-section {
+  background: var(--color-navy);
+  border-radius: 12px;
+  padding: 2rem;
+  color: #fff;
+
+  h2 {
+    font-size: 1.4rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    color: rgba(255, 255, 255, 0.85);
+  }
+}
+
+.challenge-desc {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  margin-bottom: 1.75rem;
+}
+
+.option-btn--dark,
+.chip--dark {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-sakura);
+    color: #fff;
+  }
+
+  &.selected {
+    background: var(--color-sakura);
+    border-color: var(--color-sakura);
+    color: #fff;
+  }
+}
+
+// ── Error banner ────────────────────────────────────────────────────────────
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+
+  &--dark {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
+}
+
+.dismiss-btn {
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  flex-shrink: 0;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+// ── Action row ──────────────────────────────────────────────────────────────
+
+.action-row {
+  margin-top: 0.5rem;
+}
+
+// ── Primary button ──────────────────────────────────────────────────────────
+
+.btn-primary {
+  background: var(--color-navy);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #253d6a;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Challenge button ────────────────────────────────────────────────────────
+
+.btn-challenge {
+  background: var(--color-sakura);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #e88ea8;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Spinner ─────────────────────────────────────────────────────────────────
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Responsive ──────────────────────────────────────────────────────────────
+
+@media (max-width: 600px) {
+  .create-page {
+    padding: 1rem;
+  }
+
+  .card,
+  .challenge-section {
+    padding: 1.25rem;
+  }
+
+  .btn-primary,
+  .btn-challenge {
+    width: 100%;
+    justify-content: center;
+  }
+}
