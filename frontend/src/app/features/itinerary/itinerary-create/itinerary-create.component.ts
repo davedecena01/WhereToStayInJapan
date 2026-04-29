@@ -130,8 +130,8 @@ export class ItineraryCreateComponent {
       pace: this.selectedPace()!
     })
       .pipe(
-        finalize(() => this.loading.set(false)),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
       )
       .subscribe({
         next: itinerary => {
@@ -154,8 +154,8 @@ export class ItineraryCreateComponent {
       regions: this.challengeRegions()
     })
       .pipe(
-        finalize(() => this.loading.set(false)),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false))
       )
       .subscribe({
         next: itinerary => {

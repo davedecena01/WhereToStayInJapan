@@ -4,7 +4,15 @@
   <section class="standard-section card">
     <h2>Build My Itinerary</h2>
 
-    <div class="step-indicator">Step {{ currentStep() }} of 4</div>
+    <div class="step-indicator">
+      @if (currentStep() < 4) {
+        Step {{ currentStep() }} of 4
+      } @else if (!standardReady()) {
+        Step 4 of 4 — Select pace &amp; budget to continue
+      } @else {
+        Ready to generate
+      }
+    </div>
 
     <!-- Step 1: Duration -->
     <div class="step">

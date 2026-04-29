@@ -10,8 +10,8 @@
 // ── Shared card base ────────────────────────────────────────────────────────
 
 .card {
-  background: #fff;
-  border: 1px solid #e8e0d8;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 2rem;
 
@@ -109,7 +109,7 @@
 
   &:hover:not(:disabled) {
     border-color: var(--color-sakura);
-    background: #fff5f8;
+    background: color-mix(in srgb, var(--color-sakura) 15%, white);
   }
 
   &.selected {
@@ -168,9 +168,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  background: #fef2f2;
-  border: 1px solid #fca5a5;
-  color: #991b1b;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error-text);
   padding: 0.75rem 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -222,7 +222,7 @@
   transition: background 0.15s;
 
   &:hover:not(:disabled) {
-    background: #253d6a;
+    background: color-mix(in srgb, var(--color-navy) 80%, black);
   }
 
   &:disabled {
@@ -248,7 +248,7 @@
   transition: background 0.15s;
 
   &:hover:not(:disabled) {
-    background: #e88ea8;
+    background: color-mix(in srgb, var(--color-sakura) 85%, black);
   }
 
   &:disabled {
