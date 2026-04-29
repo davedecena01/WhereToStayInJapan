@@ -7,7 +7,10 @@ namespace WhereToStayInJapan.API.Controllers;
 
 [ApiController]
 [Route("api/itinerary")]
-public class ItineraryController(IItineraryParsingService parsingService) : ControllerBase
+public class ItineraryController(
+    IItineraryParsingService parsingService,
+    IItineraryGenerationService generationService,
+    ItineraryGenerationRequestValidator generationValidator) : ControllerBase
 {
     [HttpPost("parse")]
     [RequestSizeLimit(10 * 1024 * 1024)] // 10 MB
@@ -33,6 +36,19 @@ public class ItineraryController(IItineraryParsingService parsingService) : Cont
 
         await using var stream = file.OpenReadStream();
         var result = await parsingService.ParseFileAsync(stream, file.FileName, ct);
+        return Ok(result);
+    }
+
+    [HttpPost("generate")]
+    public async Task<IActionResult> GenerateItinerary(
+        [FromBody] ItineraryGenerationRequestDto request,
+        CancellationToken ct)
+    {
+        var validation = await generationValidator.ValidateAsync(request, ct);
+        if (!validation.IsValid)
+            return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+
+        var result = await generationService.GenerateItineraryAsync(request, ct);
         return Ok(result);
     }
 }
