@@ -10,6 +10,7 @@ public class ItineraryGenerationService(IAIProvider ai) : IItineraryGenerationSe
         ItineraryGenerationRequestDto request, CancellationToken ct = default)
     {
         var parsed = await ai.GenerateItineraryAsync(request, ct);
+        // Generated itineraries have no source document and skip normalization — the AI output is the final content.
         return new ParsedItineraryDto(
             Destinations: parsed.Destinations.Select(d => new DestinationDto(
                 d.Name, d.City, d.Region, d.DayNumber, d.ActivityType,

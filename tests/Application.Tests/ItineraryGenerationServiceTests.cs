@@ -18,7 +18,7 @@ public class ItineraryGenerationServiceTests
     }
 
     [Fact]
-    public async Task GenerateItinerary_StandardMode_ReturnsMappedDto()
+    public async Task standard_mode_maps_destination_and_confidence()
     {
         var request = new ItineraryGenerationRequestDto("standard", 5, ["Kanto", "Kansai"], "cultural", "mid", "moderate");
         var parsed = new ParsedItinerary
@@ -45,7 +45,7 @@ public class ItineraryGenerationServiceTests
     }
 
     [Fact]
-    public async Task GenerateItinerary_ChallengeMode_DelegatesToAI()
+    public async Task challenge_mode_delegates_to_ai_provider()
     {
         var request = new ItineraryGenerationRequestDto("challenge", 7, ["Tohoku"], null, null, null);
         var parsed = new ParsedItinerary
@@ -65,7 +65,7 @@ public class ItineraryGenerationServiceTests
     }
 
     [Fact]
-    public async Task GenerateItinerary_RawText_IsAlwaysNull()
+    public async Task raw_text_is_null_on_generated_itinerary()
     {
         var request = new ItineraryGenerationRequestDto("standard", 3, ["Kanto"], "foodie", "budget", "relaxed");
         var parsed = new ParsedItinerary
