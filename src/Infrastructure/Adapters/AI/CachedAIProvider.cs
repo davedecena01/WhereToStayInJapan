@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 using WhereToStayInJapan.Infrastructure.Cache;
@@ -32,6 +33,21 @@ public class CachedAIProvider(IAIProvider inner, ICacheService cache) : IAIProvi
 
     public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
         => inner.EditItineraryAsync(instruction, current, ct);
+
+    public async Task<ParsedItinerary> GenerateItineraryAsync(ItineraryGenerationRequestDto request, CancellationToken ct = default)
+    {
+        // Challenge itineraries are never cached — each should feel unique
+        if (request.Mode == "challenge")
+            return await inner.GenerateItineraryAsync(request, ct);
+
+        var input = $"{request.DurationDays}:{string.Join(",", request.Regions)}:{request.TravelStyle}:{request.BudgetTier}:{request.Pace}";
+        var key = BuildHash("generate_itinerary", input.NormalizeKey());
+        return await cache.GetOrSetAsync<ParsedItinerary>(
+            key,
+            async c => await inner.GenerateItineraryAsync(request, c),
+            ExplainTtl,
+            ct) ?? await inner.GenerateItineraryAsync(request, ct);
+    }
 
     // Chat responses are conversational — do not cache
     public Task<string> ChatAsync(string message, IEnumerable<string> destinations, CancellationToken ct = default)

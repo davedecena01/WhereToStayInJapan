@@ -42,3 +42,5 @@ pw-test*.js
 # OS
 .DS_Store
 Thumbs.db
+
+.vercel

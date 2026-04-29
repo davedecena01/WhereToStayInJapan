@@ -105,6 +105,7 @@ try
 
     // Application services
     builder.Services.AddScoped<IItineraryParsingService, ItineraryParsingService>();
+    builder.Services.AddScoped<IItineraryGenerationService, ItineraryGenerationService>();
     builder.Services.AddScoped<IRecommendationService, RecommendationService>();
     builder.Services.AddScoped<IHotelSearchService, HotelSearchService>();
     builder.Services.AddScoped<IChatService, ChatService>();

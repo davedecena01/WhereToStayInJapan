@@ -1,0 +1,177 @@
+<div class="create-page">
+
+  <!-- ── Standard section ──────────────────────────────────────────────────── -->
+  <section class="standard-section card">
+    <h2>Build My Itinerary</h2>
+
+    <div class="step-indicator">
+      @if (currentStep() < 4) {
+        Step {{ currentStep() }} of 4
+      } @else if (!standardReady()) {
+        Step 4 of 4 — Select pace &amp; budget to continue
+      } @else {
+        Ready to generate
+      }
+    </div>
+
+    <!-- Step 1: Duration -->
+    <div class="step">
+      <h3>How long is your trip?</h3>
+      <div class="button-group">
+        @for (label of durationLabels; track label) {
+          <button
+            type="button"
+            class="option-btn"
+            [class.selected]="durationLabel(selectedDuration()) === label"
+            (click)="selectDuration(label)">
+            {{ label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Step 2: Regions -->
+    <div class="step">
+      <h3>Which regions?</h3>
+      <div class="chip-group">
+        @for (region of regions; track region) {
+          <button
+            type="button"
+            class="chip"
+            [class.selected]="selectedRegions().includes(region)"
+            (click)="toggleRegion(region, 'standard')">
+            {{ region }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Step 3: Travel Style -->
+    <div class="step">
+      <h3>What's your travel style?</h3>
+      <div class="style-cards">
+        @for (opt of styleOptions; track opt.value) {
+          <button
+            type="button"
+            class="style-card"
+            [class.selected]="selectedStyle() === opt.value"
+            (click)="selectedStyle.set(opt.value)">
+            {{ opt.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Step 4: Pace & Budget -->
+    <div class="step">
+      <h3>Pace &amp; Budget</h3>
+      <div class="sub-label">Pace</div>
+      <div class="button-group">
+        @for (opt of paceOptions; track opt.value) {
+          <button
+            type="button"
+            class="option-btn"
+            [class.selected]="selectedPace() === opt.value"
+            (click)="selectedPace.set(opt.value)">
+            {{ opt.label }}
+          </button>
+        }
+      </div>
+      <div class="sub-label">Budget</div>
+      <div class="button-group">
+        @for (opt of budgetOptions; track opt.value) {
+          <button
+            type="button"
+            class="option-btn"
+            [class.selected]="selectedBudget() === opt.value"
+            (click)="selectedBudget.set(opt.value)">
+            {{ opt.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="error-banner" role="alert">
+        {{ error() }}
+        <button type="button" class="dismiss-btn" (click)="error.set(null)">Dismiss</button>
+      </div>
+    }
+
+    <div class="action-row">
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="!standardReady() || loading()"
+        (click)="generateStandard()">
+        @if (loading()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Generating...
+        } @else {
+          Generate My Itinerary →
+        }
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Challenge section ─────────────────────────────────────────────────── -->
+  <section class="challenge-section">
+    <h2>Ready for a Challenge?</h2>
+    <p class="challenge-desc">Skip the crowds. We'll build you a Japan trip most tourists never discover.</p>
+
+    <!-- Duration -->
+    <div class="step">
+      <h3>How long is your trip?</h3>
+      <div class="button-group">
+        @for (label of durationLabels; track label) {
+          <button
+            type="button"
+            class="option-btn option-btn--dark"
+            [class.selected]="durationLabel(challengeDuration()) === label"
+            (click)="selectChallengeDuration(label)">
+            {{ label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Regions -->
+    <div class="step">
+      <h3>Which regions?</h3>
+      <div class="chip-group">
+        @for (region of regions; track region) {
+          <button
+            type="button"
+            class="chip chip--dark"
+            [class.selected]="challengeRegions().includes(region)"
+            (click)="toggleRegion(region, 'challenge')">
+            {{ region }}
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="error-banner error-banner--dark" role="alert">
+        {{ error() }}
+        <button type="button" class="dismiss-btn" (click)="error.set(null)">Dismiss</button>
+      </div>
+    }
+
+    <div class="action-row">
+      <button
+        type="button"
+        class="btn-challenge"
+        [disabled]="!challengeReady() || loading()"
+        (click)="generateChallenge()">
+        @if (loading()) {
+          <span class="spinner spinner--light" aria-hidden="true"></span>
+          Generating...
+        } @else {
+          Generate Challenge Itinerary ⚡
+        }
+      </button>
+    </div>
+  </section>
+
+</div>

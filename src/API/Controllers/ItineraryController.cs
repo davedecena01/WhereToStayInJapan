@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Services.Interfaces;
-using WhereToStayInJapan.Application.Validation;
 
 namespace WhereToStayInJapan.API.Controllers;
 
 [ApiController]
 [Route("api/itinerary")]
-public class ItineraryController(IItineraryParsingService parsingService) : ControllerBase
+public class ItineraryController(
+    IItineraryParsingService parsingService,
+    IItineraryGenerationService generationService) : ControllerBase
 {
     [HttpPost("parse")]
     [RequestSizeLimit(10 * 1024 * 1024)] // 10 MB
@@ -33,6 +34,15 @@ public class ItineraryController(IItineraryParsingService parsingService) : Cont
 
         await using var stream = file.OpenReadStream();
         var result = await parsingService.ParseFileAsync(stream, file.FileName, ct);
+        return Ok(result);
+    }
+
+    [HttpPost("generate")]
+    public async Task<ActionResult<ParsedItineraryDto>> GenerateItinerary(
+        [FromBody] ItineraryGenerationRequestDto request,
+        CancellationToken ct)
+    {
+        var result = await generationService.GenerateItineraryAsync(request, ct);
         return Ok(result);
     }
 }

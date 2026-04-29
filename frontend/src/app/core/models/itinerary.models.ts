@@ -152,3 +152,18 @@ export interface HotelClickRequest {
   hotel_id: string;
   area_id: string;
 }
+
+// ── Itinerary generation models ────────────────────────────────────────────
+
+export type TravelStyle = 'cultural' | 'foodie' | 'nature' | 'urban' | 'mix';
+export type Pace = 'relaxed' | 'moderate' | 'packed';
+export type GenerationMode = 'standard' | 'challenge';
+
+export interface ItineraryGenerationRequest {
+  mode: GenerationMode;
+  duration_days: number;
+  regions: string[];
+  travel_style?: TravelStyle;
+  budget_tier?: BudgetTier;
+  pace?: Pace;
+}

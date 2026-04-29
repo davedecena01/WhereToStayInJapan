@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Interfaces;
 using WhereToStayInJapan.Domain.Models;
 using WhereToStayInJapan.Shared.Constants;
@@ -51,6 +52,15 @@ public partial class RulesOnlyAdapter : IAIProvider
 
     public Task<ParsedItinerary> EditItineraryAsync(string instruction, ParsedItinerary current, CancellationToken ct = default)
         => Task.FromResult(current);
+
+    public Task<ParsedItinerary> GenerateItineraryAsync(ItineraryGenerationRequestDto request, CancellationToken ct = default)
+        => Task.FromResult(new ParsedItinerary
+        {
+            ParsingConfidence = "low",
+            ClarificationNeeded = true,
+            Destinations = [],
+            RegionsDetected = []
+        });
 
     public Task<string> ChatAsync(string message, IEnumerable<string> destinations, CancellationToken ct = default)
         => Task.FromResult("I can help refine your itinerary. Try asking me to add, remove, or move destinations.");
