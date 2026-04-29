@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Services.Interfaces;
-using WhereToStayInJapan.Application.Validation;
 
 namespace WhereToStayInJapan.API.Controllers;
 
@@ -9,8 +8,7 @@ namespace WhereToStayInJapan.API.Controllers;
 [Route("api/itinerary")]
 public class ItineraryController(
     IItineraryParsingService parsingService,
-    IItineraryGenerationService generationService,
-    ItineraryGenerationRequestValidator generationValidator) : ControllerBase
+    IItineraryGenerationService generationService) : ControllerBase
 {
     [HttpPost("parse")]
     [RequestSizeLimit(10 * 1024 * 1024)] // 10 MB
@@ -40,14 +38,10 @@ public class ItineraryController(
     }
 
     [HttpPost("generate")]
-    public async Task<IActionResult> GenerateItinerary(
+    public async Task<ActionResult<ParsedItineraryDto>> GenerateItinerary(
         [FromBody] ItineraryGenerationRequestDto request,
         CancellationToken ct)
     {
-        var validation = await generationValidator.ValidateAsync(request, ct);
-        if (!validation.IsValid)
-            return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
-
         var result = await generationService.GenerateItineraryAsync(request, ct);
         return Ok(result);
     }
