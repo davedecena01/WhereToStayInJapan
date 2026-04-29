@@ -23,6 +23,7 @@
             type="button"
             class="option-btn"
             [class.selected]="durationLabel(selectedDuration()) === label"
+            [attr.aria-pressed]="durationLabel(selectedDuration()) === label"
             (click)="selectDuration(label)">
             {{ label }}
           </button>
@@ -39,6 +40,7 @@
             type="button"
             class="chip"
             [class.selected]="selectedRegions().includes(region)"
+            [attr.aria-pressed]="selectedRegions().includes(region)"
             (click)="toggleRegion(region, 'standard')">
             {{ region }}
           </button>
@@ -55,6 +57,7 @@
             type="button"
             class="style-card"
             [class.selected]="selectedStyle() === opt.value"
+            [attr.aria-pressed]="selectedStyle() === opt.value"
             (click)="selectedStyle.set(opt.value)">
             {{ opt.label }}
           </button>
@@ -72,6 +75,7 @@
             type="button"
             class="option-btn"
             [class.selected]="selectedPace() === opt.value"
+            [attr.aria-pressed]="selectedPace() === opt.value"
             (click)="selectedPace.set(opt.value)">
             {{ opt.label }}
           </button>
@@ -84,6 +88,7 @@
             type="button"
             class="option-btn"
             [class.selected]="selectedBudget() === opt.value"
+            [attr.aria-pressed]="selectedBudget() === opt.value"
             (click)="selectedBudget.set(opt.value)">
             {{ opt.label }}
           </button>
@@ -91,10 +96,10 @@
       </div>
     </div>
 
-    @if (error()) {
+    @if (standardError()) {
       <div class="error-banner" role="alert">
-        {{ error() }}
-        <button type="button" class="dismiss-btn" (click)="error.set(null)">Dismiss</button>
+        {{ standardError() }}
+        <button type="button" class="dismiss-btn" (click)="standardError.set(null)">Dismiss</button>
       </div>
     }
 
@@ -128,6 +133,7 @@
             type="button"
             class="option-btn option-btn--dark"
             [class.selected]="durationLabel(challengeDuration()) === label"
+            [attr.aria-pressed]="durationLabel(challengeDuration()) === label"
             (click)="selectChallengeDuration(label)">
             {{ label }}
           </button>
@@ -144,6 +150,7 @@
             type="button"
             class="chip chip--dark"
             [class.selected]="challengeRegions().includes(region)"
+            [attr.aria-pressed]="challengeRegions().includes(region)"
             (click)="toggleRegion(region, 'challenge')">
             {{ region }}
           </button>
@@ -151,10 +158,10 @@
       </div>
     </div>
 
-    @if (error()) {
+    @if (challengeError()) {
       <div class="error-banner error-banner--dark" role="alert">
-        {{ error() }}
-        <button type="button" class="dismiss-btn" (click)="error.set(null)">Dismiss</button>
+        {{ challengeError() }}
+        <button type="button" class="dismiss-btn" (click)="challengeError.set(null)">Dismiss</button>
       </div>
     }
 

@@ -69,7 +69,8 @@ export class ItineraryCreateComponent {
 
   // Shared state
   readonly loading = signal(false);
-  readonly error = signal<string | null>(null);
+  readonly standardError = signal<string | null>(null);
+  readonly challengeError = signal<string | null>(null);
 
   // Computed readiness
   readonly standardReady = computed(() =>
@@ -85,12 +86,12 @@ export class ItineraryCreateComponent {
     this.challengeRegions().length > 0
   );
 
-  // Step indicator: count how many of the 4 standard steps have a selection
+  // Step indicator: tracks which step the user has reached in the standard wizard
   readonly currentStep = computed(() => {
     let step = 1;
     if (this.selectedDuration() !== null) step = 2;
     if (this.selectedRegions().length > 0) step = 3;
-    if (this.selectedStyle() !== null) step = 4;
+    if (this.selectedStyle() !== null || this.selectedPace() !== null || this.selectedBudget() !== null) step = 4;
     return step;
   });
 
@@ -118,11 +119,11 @@ export class ItineraryCreateComponent {
   generateStandard(): void {
     if (!this.standardReady() || this.loading()) return;
 
-    this.error.set(null);
+    this.standardError.set(null);
     this.loading.set(true);
 
     this.api.generateItinerary({
-      mode: 'standard' as GenerationMode,
+      mode: 'standard',
       duration_days: this.selectedDuration()!,
       regions: this.selectedRegions(),
       travel_style: this.selectedStyle()!,
@@ -138,18 +139,18 @@ export class ItineraryCreateComponent {
           this.store.setItinerary(itinerary);
           this.router.navigate(['/review']);
         },
-        error: () => this.error.set('Generation failed. Please try again.')
+        error: () => this.standardError.set('Generation failed. Please try again.')
       });
   }
 
   generateChallenge(): void {
     if (!this.challengeReady() || this.loading()) return;
 
-    this.error.set(null);
+    this.challengeError.set(null);
     this.loading.set(true);
 
     this.api.generateItinerary({
-      mode: 'challenge' as GenerationMode,
+      mode: 'challenge',
       duration_days: this.challengeDuration()!,
       regions: this.challengeRegions()
     })
@@ -162,7 +163,7 @@ export class ItineraryCreateComponent {
           this.store.setItinerary(itinerary);
           this.router.navigate(['/review']);
         },
-        error: () => this.error.set('Generation failed. Please try again.')
+        error: () => this.challengeError.set('Generation failed. Please try again.')
       });
   }
 }
