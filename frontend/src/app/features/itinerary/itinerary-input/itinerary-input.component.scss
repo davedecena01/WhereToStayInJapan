@@ -284,3 +284,20 @@ textarea {
     padding: 1.5rem 1rem;
   }
 }
+
+.create-link {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: center;
+
+  a {
+    color: var(--color-sakura);
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

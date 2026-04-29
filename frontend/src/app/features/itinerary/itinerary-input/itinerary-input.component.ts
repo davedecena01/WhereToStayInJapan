@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 import { ItineraryStore } from '../../../core/stores/itinerary.store';
@@ -13,7 +13,7 @@ import {
 
 @Component({
   selector: 'app-itinerary-input',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './itinerary-input.component.html',
   styleUrl: './itinerary-input.component.scss'
 })
