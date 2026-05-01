@@ -23,11 +23,6 @@
   animation: shimmer 1.4s ease infinite;
 }
 
-@keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
 .loading-text {
   text-align: center;
   color: #888;
