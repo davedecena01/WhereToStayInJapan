@@ -15,7 +15,7 @@
   --color-cream:         #FFF8F0;
   --color-gold:          #D4A017;
 
-  // Backward-compat alias
+  // Backward-compat alias — prefer --color-sakura-deep for new code
   --primary:             #c0636b;
 
   // ── Surface & border ─────────────────────────────────────────────────────
@@ -26,8 +26,8 @@
   --surface-skeleton-b:  #fdf5ee;
 
   --border:              #e5e5e5;
-  --border-warm:         #e8ddd5;
-  --border-warmer:       #e8e0d8;
+  --border-warm:         #e8ddd5;   // card borders
+  --border-warmer:       #e8e0d8;   // input page card borders
   --border-inner:        #f0e8e0;
   --border-input:        #cccccc;
 
@@ -132,7 +132,7 @@
 // ── Global keyframes ─────────────────────────────────────────────────────────
 
 @keyframes sakura-fall {
-  0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+  0%   { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 0; }
   8%   { opacity: var(--op, 0.7); }
   88%  { opacity: calc(var(--op, 0.7) * 0.6); }
   100% { transform: translateY(105vh) rotate(600deg) translateX(var(--sway, 30px)); opacity: 0; }
@@ -172,7 +172,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  font-family: var(--font-sans);
   background: var(--color-cream);
   color: var(--text-primary);
   line-height: 1.6;
