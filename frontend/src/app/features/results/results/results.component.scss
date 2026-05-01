@@ -42,6 +42,18 @@
   margin-top: 0.25rem;
 }
 
+.alpaca-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  margin-top: var(--space-2, 0.5rem);
+
+  img {
+    border-radius: var(--radius-xl, 10px);
+  }
+}
+
 // ── Error ─────────────────────────────────────────────────────────────────
 
 .error-banner {
