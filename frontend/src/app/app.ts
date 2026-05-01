@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { SessionService } from './core/services/session.service';
 import { ItineraryStore } from './core/stores/itinerary.store';
 import { Router } from '@angular/router';
@@ -12,12 +11,12 @@ interface SakuraPetal {
   delay: number;
   size: number;
   sway: number;
-  op: number;
+  opacity: number;
 }
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, CommonModule],
+  imports: [RouterOutlet, RouterLink],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -37,7 +36,7 @@ export class App {
     delay: Math.random() * 8,
     size: 6 + Math.random() * 7,
     sway: (Math.random() - 0.5) * 80,
-    op: 0.35 + Math.random() * 0.45,
+    opacity: 0.35 + Math.random() * 0.45,
   }));
 
   dismissResumeBanner(): void {
