@@ -6,8 +6,11 @@
       <div class="loading-card skeleton"></div>
       <div class="loading-card skeleton"></div>
       <div class="loading-card skeleton"></div>
-      <p class="loading-text">{{ recStore.loadingMessage() }}</p>
-      <p class="loading-subtext">First-time routing can take up to 90 seconds while travel times are calculated.</p>
+      <div class="alpaca-loader">
+        <img src="assets/alpaca-loading.gif" alt="" aria-hidden="true" width="110" />
+        <p class="loading-text">{{ recStore.loadingMessage() }}</p>
+        <p class="loading-subtext">First-time routing can take up to 90 seconds while travel times are calculated.</p>
+      </div>
     </div>
   }
 

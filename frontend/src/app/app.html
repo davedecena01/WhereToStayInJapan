@@ -1,5 +1,20 @@
 <div class="app-shell">
   <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <div class="sakura-bg" aria-hidden="true">
+    @for (p of petals; track p.id) {
+      <div class="sakura-petal"
+        [style.left.%]="p.left"
+        [style.width.px]="p.size"
+        [style.height.px]="p.size"
+        [style.animation-duration]="p.duration + 's'"
+        [style.animation-delay]="p.delay + 's'"
+        [style.--op]="p.opacity"
+        [style.--sway]="p.sway + 'px'">
+      </div>
+    }
+  </div>
+
   <nav class="app-nav" aria-label="Site navigation">
     <a class="nav-brand" routerLink="/">
       <span class="nav-logo">🌸</span>
