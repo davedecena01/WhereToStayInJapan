@@ -202,7 +202,7 @@ public partial class GeminiAdapter(HttpClient http, string apiKey, string modelI
             {
                 new { parts = new[] { new { text = promptText } } }
             },
-            generationConfig = new { temperature = 0.2, maxOutputTokens = 4096 }
+            generationConfig = new { temperature = 0.2, maxOutputTokens = 8192 }
         };
 
         return await _pipeline.ExecuteAsync(async token =>
