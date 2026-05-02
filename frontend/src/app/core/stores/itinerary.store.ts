@@ -2,8 +2,8 @@ import { computed, Injectable, signal } from '@angular/core';
 import { ParsedItinerary, UserPreferences } from '../models/itinerary.models';
 
 const DEFAULT_PREFERENCES: UserPreferences = {
-  check_in: '',
-  check_out: '',
+  check_in: null,
+  check_out: null,
   travelers: 2,
   budget_tier: 'mid',
   avoid_long_walking: false,

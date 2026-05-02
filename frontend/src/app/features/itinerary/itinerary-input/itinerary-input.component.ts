@@ -30,8 +30,8 @@ export class ItineraryInputComponent {
   dragOver = signal(false);
 
   preferences: UserPreferences = {
-    check_in: '',
-    check_out: '',
+    check_in: null,
+    check_out: null,
     travelers: 2,
     budget_tier: 'mid',
     avoid_long_walking: false,
@@ -108,7 +108,11 @@ export class ItineraryInputComponent {
 
     this.store.setError(null);
     this.store.setLoading(true);
-    this.store.updatePreferences(this.preferences);
+    this.store.updatePreferences({
+      ...this.preferences,
+      check_in: this.preferences.check_in || null,
+      check_out: this.preferences.check_out || null
+    });
 
     const file = this.selectedFile();
     const obs = file ? this.api.parseFile(file) : this.api.parseText(this.rawText);

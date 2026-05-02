@@ -32,15 +32,15 @@ export class ApiService {
     });
   }
 
-  getHotels(areaId: string, budgetTier: string, checkin: string, checkout: string, travelers: number, page = 1): Observable<HotelSearchResult> {
+  getHotels(areaId: string, budgetTier: string, checkin: string | null, checkout: string | null, travelers: number, page = 1): Observable<HotelSearchResult> {
     const params = new URLSearchParams({
       area_id: areaId,
       budget_tier: budgetTier,
-      checkin,
-      checkout,
       travelers: travelers.toString(),
       page: page.toString()
     });
+    if (checkin) params.set('checkin', checkin);
+    if (checkout) params.set('checkout', checkout);
     return this.http.get<HotelSearchResult>(`${this.base}/api/hotels?${params}`);
   }
 

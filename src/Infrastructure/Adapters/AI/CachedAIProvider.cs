@@ -44,7 +44,14 @@ public class CachedAIProvider(IAIProvider inner, ICacheService cache) : IAIProvi
         var key = BuildHash("generate_itinerary", input.NormalizeKey());
         return await cache.GetOrSetAsync<ParsedItinerary>(
             key,
-            async c => await inner.GenerateItineraryAsync(request, c),
+            async c =>
+            {
+                var result = await inner.GenerateItineraryAsync(request, c);
+                // Don't cache fallback results — retry on next request when provider recovers
+                return result is { ClarificationNeeded: true, ParsingConfidence: "low", Destinations.Count: 0 }
+                    ? null
+                    : result;
+            },
             ExplainTtl,
             ct) ?? await inner.GenerateItineraryAsync(request, ct);
     }

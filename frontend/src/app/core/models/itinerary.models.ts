@@ -27,8 +27,8 @@ export type BudgetTier = 'budget' | 'mid' | 'luxury';
 export type AtmosphereType = 'nightlife' | 'family_friendly' | 'quiet' | 'shopping' | 'historic' | 'modern';
 
 export interface UserPreferences {
-  check_in: string;
-  check_out: string;
+  check_in: string | null;
+  check_out: string | null;
   travelers: number;
   budget_tier: BudgetTier;
   preferred_atmosphere: AtmosphereType[];
