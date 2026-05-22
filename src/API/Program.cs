@@ -1,6 +1,8 @@
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using WhereToStayInJapan.API.Middleware;
@@ -114,6 +116,44 @@ try
     builder.Services.AddValidatorsFromAssemblyContaining<ParseItineraryRequestValidator>();
     builder.Services.AddFluentValidationAutoValidation();
 
+    // Rate limiting — per-IP, fixed window, per-route policies
+    builder.Services.AddRateLimiter(opts =>
+    {
+        opts.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+        opts.AddPolicy("parse", ctx => RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ctx.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue<int>("RateLimit:ParseRequestsPerMinute", 10),
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+        opts.AddPolicy("recommend", ctx => RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ctx.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue<int>("RateLimit:RecommendationRequestsPerMinute", 20),
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+        opts.AddPolicy("chat", ctx => RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ctx.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue<int>("RateLimit:ChatRequestsPerMinute", 15),
+                Window = TimeSpan.FromMinutes(1)
+            }));
+
+        opts.AddPolicy("analytics", ctx => RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ctx.Connection.RemoteIpAddress?.ToString() ?? "anon",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = builder.Configuration.GetValue<int>("RateLimit:AnalyticsRequestsPerMinute", 60),
+                Window = TimeSpan.FromMinutes(1)
+            }));
+    });
+
     // Background services
     builder.Services.AddHostedService<DataSeeder>();
     builder.Services.AddHostedService<CacheCleanupService>();
@@ -155,10 +195,24 @@ try
         });
     builder.Services.AddOpenApi();
 
+    // Only include stable, known origins — no rotating preview/deployment URLs
     var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
         ?? ["http://localhost:4200"];
     builder.Services.AddCors(opts => opts.AddDefaultPolicy(p =>
         p.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod()));
+
+    // Startup assertions: fail fast if required production secrets are absent
+    if (builder.Environment.IsProduction())
+    {
+        if (aiMode == "production" && string.IsNullOrWhiteSpace(builder.Configuration["AI:GeminiApiKey"]))
+            throw new InvalidOperationException("AI:GeminiApiKey is required when AI:Mode is 'production'.");
+
+        if (hotelProvider == "rakuten" && string.IsNullOrWhiteSpace(builder.Configuration["Hotels:ProxySecret"]))
+            throw new InvalidOperationException("Hotels:ProxySecret is required when Hotels:Provider is 'rakuten'.");
+
+        if (string.IsNullOrWhiteSpace(builder.Configuration.GetConnectionString("DefaultConnection")))
+            throw new InvalidOperationException("ConnectionStrings:DefaultConnection is required in production.");
+    }
 
     var app = builder.Build();
 
@@ -171,12 +225,17 @@ try
         await db.Database.MigrateAsync();
     }
 
+    if (app.Environment.IsProduction())
+        app.UseHttpsRedirection();
+
+    app.UseMiddleware<SecurityHeadersMiddleware>();
     app.UseMiddleware<GlobalExceptionMiddleware>();
 
     if (app.Environment.IsDevelopment())
         app.MapOpenApi();
 
     app.UseCors();
+    app.UseRateLimiter();
     app.UseAuthorization();
     app.MapControllers();
 
