@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using WhereToStayInJapan.Application.DTOs;
 using WhereToStayInJapan.Application.Services.Interfaces;
 
@@ -6,6 +7,7 @@ namespace WhereToStayInJapan.API.Controllers;
 
 [ApiController]
 [Route("api/recommendations")]
+[EnableRateLimiting("recommend")]
 public class RecommendationController(IRecommendationService recommendationService) : ControllerBase
 {
     [HttpPost]
